@@ -1,52 +1,25 @@
 <template>
-  <div class="home">
-    <div style="padding: 8px" v-for="article in articles" :key="article.title">
-      <article-card :article="article" />
-    </div>
-  </div>
+  <v-container fluid fill-height>
+    <v-layout align-center justify-center>
+      <v-list>
+        <v-img src="assets/images/appIcon.png" width="256" height="256" />
+        <p>TESTE</p>
+      </v-list>
+    </v-layout>
+  </v-container>
 </template>
 
 <script>
-import ArticleCard from "../components/ArticleCard.vue";
-import "../router";
 export default {
   name: "Home",
 
-  components: {
-    ArticleCard,
-  },
-
   mounted: function () {
-    this.loadXml();
+    this.sendFeedNameToAppBar();
   },
-
-  data: () => ({
-    articles: [],
-  }),
 
   methods: {
-    loadXml() {
-      const selfVue = this;
-      var xhttp = new XMLHttpRequest();
-      xhttp.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
-          this.responseXML.getElementsByTagName("item").forEach((element) => {
-            selfVue.articles.push({
-              title: element.getElementsByTagName("title")[0].childNodes[0]
-                .nodeValue,
-              description: element.getElementsByTagName("description")[0]
-                .childNodes[0].nodeValue,
-              url: element.getElementsByTagName("link")[0].childNodes[0]
-                .nodeValue,
-              image: this.responseXML
-                .getElementsByTagName("image")[0]
-                .getElementsByTagName("url")[0].childNodes[0].nodeValue,
-            });
-          });
-        }
-      };
-      xhttp.open("GET", selfVue.$route.params.feed);
-      xhttp.send();
+    sendFeedNameToAppBar() {
+      this.$emit("feedName", "");
     },
   },
 };
