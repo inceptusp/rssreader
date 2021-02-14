@@ -1,28 +1,28 @@
 <template>
   <v-app>
-    <appBar @drawerControl="openCloseDrawer" v-bind:feedName="feedName"/>
+    <appBar @drawerControl="openCloseDrawer" v-bind:feedName="feedName" />
 
-    <drawer v-model="drawer"/>
+    <drawer v-model="drawer" />
 
     <v-main>
-      <router-view :key="$route.fullPath" @feedName="sendFeedNameToAppBar"/>
+      <router-view :key="$route.fullPath" @feedName="sendFeedNameToAppBar" />
     </v-main>
   </v-app>
 </template>
 
 <script>
-import AppBar from './components/AppBar.vue'
-import Drawer from './components/Drawer.vue'
+import AppBar from "./components/AppBar.vue";
+import Drawer from "./components/Drawer.vue";
 
 export default {
   components: {
     appBar: AppBar,
-    drawer: Drawer
+    drawer: Drawer,
   },
 
   data: () => ({
     drawer: null,
-    feedName: ""
+    feedName: "",
   }),
 
   methods: {
@@ -32,8 +32,8 @@ export default {
 
     sendFeedNameToAppBar(name) {
       this.feedName = name;
-    }
-  }
+    },
+  },
 };
 </script>
 
