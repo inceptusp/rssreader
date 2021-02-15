@@ -8,22 +8,27 @@
           style="max-height: 64px"
         >
           <v-list-item-avatar color="grey">
-            <v-icon color="white">mdi-account</v-icon>
-            <!-- <v-img
-              src="https://randomuser.me/api/portraits/women/85.jpg"
-            ></v-img> -->
+            <v-icon color="white" v-if="userPhoto == ''">mdi-account</v-icon>
+            <v-img v-else>
+              <img v-bind:src="userPhoto" referrerpolicy="no-referrer" />
+            </v-img>
           </v-list-item-avatar>
           <v-list-item-content>
-            <v-list-item-title>Welcome</v-list-item-title>
-            <v-list-item-subtitle>Login or Sing Up</v-list-item-subtitle>
+            <v-list-item-title class="fade">{{
+              logged ? userName : "Welcome"
+            }}</v-list-item-title>
+            <v-list-item-subtitle>{{
+              logged ? "Sing out" : "Login or Sing Up"
+            }}</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
       </v-app-bar>
 
       <authenticationDialog v-model="accountDialog" />
+      <logOffDialog v-model="signOutDialog" />
     </template>
 
-    <v-list-item>
+    <v-list-item v-if="logged">
       <v-layout align-center justify-center>
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
@@ -60,7 +65,7 @@
       </v-layout>
     </v-list-item>
 
-    <v-divider />
+    <v-divider v-if="logged" />
 
     <v-text-field
       v-if="searchBar"
@@ -77,27 +82,31 @@
       <v-list-item link to="/">
         <v-list-item-title> Home </v-list-item-title>
       </v-list-item>
-      <v-list-item link to="/feed/rss091.xml">
-        <v-list-item-title> Folha </v-list-item-title>
-      </v-list-item>
-      <v-list-item link to="/feed/feed.xml">
-        <v-list-item-title> Tecmundo </v-list-item-title>
-      </v-list-item>
-      <v-list-item link to="/feed/meira.xml">
-        <v-list-item-title> Silvio Meira </v-list-item-title>
-      </v-list-item>
+      <template v-if="logged">
+        <v-list-item link to="/feed/rss091.xml">
+          <v-list-item-title> Folha </v-list-item-title>
+        </v-list-item>
+        <v-list-item link to="/feed/feed.xml">
+          <v-list-item-title> Tecmundo </v-list-item-title>
+        </v-list-item>
+        <v-list-item link to="/feed/meira.xml">
+          <v-list-item-title> Silvio Meira </v-list-item-title>
+        </v-list-item>
+      </template>
     </v-list>
   </v-navigation-drawer>
 </template>
 
 <script>
 import AuthenticationDialog from "../components/AuthenticationDialog.vue";
+import LogOffDialog from "../components/LogOffDialog.vue";
 
 export default {
   name: "Drawer",
 
   components: {
     authenticationDialog: AuthenticationDialog,
+    logOffDialog: LogOffDialog,
   },
 
   props: {
@@ -106,13 +115,22 @@ export default {
 
   mounted: function () {
     this.drawer = this.value;
+    if (window.localStorage.getItem("uuid") != null) {
+      this.logged = true;
+      this.userName = window.localStorage.getItem("user");
+      this.userPhoto = window.localStorage.getItem("pic");
+    }
   },
 
   data: () => ({
     drawer: null,
     accountDialog: false,
+    signOutDialog: false,
+    userName: "",
+    userPhoto: "",
     searchBar: false,
     search: "",
+    logged: false,
   }),
 
   watch: {
@@ -127,8 +145,13 @@ export default {
 
   methods: {
     showAccountDialog() {
-      this.drawer = null;
-      this.accountDialog = !this.accountDialog;
+      if (!this.logged) {
+        this.drawer = null;
+        this.accountDialog = !this.accountDialog;
+      } else {
+        this.drawer = null;
+        this.signOutDialog = !this.signOutDialog;
+      }
     },
 
     openSearch() {
@@ -139,6 +162,10 @@ export default {
 </script>
 
 <style>
+.fade {
+  width: 128px;
+}
+
 @media only screen and (min-width: 960px) {
   .v-toolbar__content {
     padding: 0px;
