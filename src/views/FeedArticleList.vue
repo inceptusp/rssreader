@@ -31,13 +31,20 @@ export default {
       var xhttp = new XMLHttpRequest();
       xhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
-          selfVue.name = this.responseXML.getElementsByTagName("channel")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue;
+          selfVue.name = this.responseXML
+            .getElementsByTagName("channel")[0]
+            .getElementsByTagName("title")[0].childNodes[0].nodeValue;
           this.responseXML.getElementsByTagName("item").forEach((element) => {
             selfVue.articles.push({
               title: element.getElementsByTagName("title")[0].childNodes[0]
                 .nodeValue,
               description: element.getElementsByTagName("description")[0]
                 .childNodes[0].nodeValue,
+              content:
+                element.getElementsByTagName("content:encoded").length == 0
+                  ? ""
+                  : element.getElementsByTagName("content:encoded")[0]
+                      .childNodes[0].nodeValue,
               url: element.getElementsByTagName("link")[0].childNodes[0]
                 .nodeValue,
               image: this.responseXML
@@ -54,7 +61,7 @@ export default {
 
     sendFeedNameToAppBar() {
       this.$emit("feedName", this.name);
-    }
+    },
   },
 };
 </script>
