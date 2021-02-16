@@ -27,11 +27,19 @@ export default {
           "250982835780-6j2u60idrag2lpumgv48nal9vhi8ui8r.apps.googleusercontent.com",
       });
     });
-    if (window.localStorage.getItem("uuid") == null) {
-      window.gapi.auth2.getAuthInstance().signOut();
-    }
+    window.setTimeout(function () {
+      if (
+        window.localStorage.getItem("uuid") == null &&
+        window.gapi.auth2.getAuthInstance().isSignedIn.get()
+      ) {
+        window.gapi.auth2.getAuthInstance().signOut();
+      }
+    }, 500);
     window.addEventListener("online", function () {
-      if (window.localStorage.getItem("uuid") == null) {
+      if (
+        window.localStorage.getItem("uuid") == null &&
+        window.gapi.auth2.getAuthInstance().isSignedIn.get()
+      ) {
         window.setTimeout(function () {
           window.gapi.auth2.getAuthInstance().signOut();
         }, 2000);
