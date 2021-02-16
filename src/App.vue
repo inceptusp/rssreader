@@ -20,12 +20,22 @@ export default {
     drawer: Drawer,
   },
 
-  mounted: function() {
+  mounted: function () {
     window.gapi.load("auth2", function () {
       window.gapi.auth2.init({
         client_id:
           "250982835780-6j2u60idrag2lpumgv48nal9vhi8ui8r.apps.googleusercontent.com",
       });
+    });
+    if (window.localStorage.getItem("uuid") == null) {
+      window.gapi.auth2.getAuthInstance().signOut();
+    }
+    window.addEventListener("online", function () {
+      if (window.localStorage.getItem("uuid") == null) {
+        window.setTimeout(function () {
+          window.gapi.auth2.getAuthInstance().signOut();
+        }, 2000);
+      }
     });
   },
 
