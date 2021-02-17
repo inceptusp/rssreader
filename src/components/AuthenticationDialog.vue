@@ -25,7 +25,6 @@
                 v-bind:label="$t('E-mail')"
                 v-bind:rules="[required]"
                 outlined
-                full-width
                 hide-details="auto"
               />
               <v-text-field
@@ -37,7 +36,6 @@
                 v-bind:rules="[required, minLength]"
                 @click:append="showPass1 = !showPass1"
                 outlined
-                full-width
                 hide-details="auto"
               />
               <v-layout>
@@ -102,7 +100,6 @@
                 v-bind:label="$t('Name')"
                 v-bind:rules="[required]"
                 outlined
-                full-width
                 hide-details="auto"
               />
               <v-text-field
@@ -111,7 +108,6 @@
                 v-bind:label="$t('E-mail')"
                 v-bind:rules="[required]"
                 outlined
-                full-width
                 hide-details="auto"
               />
               <v-text-field
@@ -123,7 +119,6 @@
                 v-bind:rules="[required, minLength]"
                 @click:append="showPass1 = !showPass1"
                 outlined
-                full-width
                 hide-details="auto"
               />
               <v-text-field
@@ -135,7 +130,6 @@
                 v-bind:rules="[required, minLength, passwordMatch]"
                 @click:append="showPass2 = !showPass2"
                 outlined
-                full-width
                 hide-details="auto"
               />
               <v-layout>
@@ -226,11 +220,11 @@ export default {
 
   computed: {
     loginOptionColor() {
-      return this.loginOrSingUp == 'login' ? '#00bfa5' : 'black';
+      return this.loginOrSingUp == "login" ? "#00bfa5" : "black";
     },
 
     signupOptionColor() {
-      return this.loginOrSingUp == 'signup' ? '#00bfa5' : 'black';
+      return this.loginOrSingUp == "signup" ? "#00bfa5" : "black";
     },
 
     passwordMatch() {
@@ -239,8 +233,8 @@ export default {
         this.$t("The passwords don't match");
     },
 
-    required(value) {
-      return value != "" || this.$t("This field is mandatory");
+    required() {
+      return (value) => !!value || this.$t("This field is mandatory");
     },
 
     minLength(value) {
@@ -250,16 +244,16 @@ export default {
 
   data: () => ({
     dialog: false,
-    loginOrSingUp: "",
-    email: "",
-    password: "",
-    name: "",
-    repeatPassword: "",
+    loginOrSingUp: null,
+    email: null,
+    password: null,
+    name: null,
+    repeatPassword: null,
     showPass1: false,
     showPass2: false,
     errorDialog: false,
-    errorTitle: "",
-    errorContent: "",
+    errorTitle: null,
+    errorContent: null,
     sending: false,
   }),
 
@@ -377,16 +371,18 @@ export default {
   watch: {
     value: function () {
       this.dialog = this.value;
-      if (this.loginOrSingUp == "") {
+      if (this.loginOrSingUp == null) {
         this.loginOrSingUp = "login";
       }
     },
 
     dialog: function () {
+      this.$refs.formRef.reset();
       this.$emit("input", this.dialog);
     },
 
     loginOrSingUp: function () {
+      this.$refs.formRef.reset();
       const selfVue = this;
       window.setTimeout(function () {
         window.gapi.auth2
