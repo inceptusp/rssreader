@@ -34,7 +34,7 @@ export default {
       ) {
         window.gapi.auth2.getAuthInstance().signOut();
       }
-    }, 500);
+    }, 1000);
     window.addEventListener("online", function () {
       if (
         window.localStorage.getItem("uuid") == null &&
@@ -45,6 +45,7 @@ export default {
         }, 2000);
       }
     });
+    this.loadSettings();
   },
 
   data: () => ({
@@ -60,6 +61,13 @@ export default {
     sendFeedNameToAppBar(name) {
       this.feedName = name;
     },
+
+    loadSettings() {
+      if (window.localStorage.getItem("settings") != null){
+        var settings = JSON.parse(window.localStorage.getItem("settings"));
+        this.$vuetify.theme.dark = settings.darkMode;
+      }
+    }
   },
 };
 </script>

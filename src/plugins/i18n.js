@@ -38,6 +38,11 @@ const messages = {
        "Are you sure?":"Tem certeza?",
        "Are you sure that you want to sign out?":"Tem certeza que deseja sair?",
        "Add a new feed":"Adicionar novo feed",
+       "Order feeds list":"Ordenar lista de feeds",
+       "Alphabetically":"Alfabeticamente",
+       "Added date":"Ordem de adição",
+       "Dark mode":"Modo escuro",
+       "Reset":"Redefinir",
     }
 }
 

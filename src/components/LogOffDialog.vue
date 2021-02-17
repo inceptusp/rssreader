@@ -46,6 +46,7 @@ export default {
         window.localStorage.removeItem("login");
         window.localStorage.removeItem("uuid");
         window.localStorage.removeItem("feeds");
+        window.localStorage.removeItem("settings");
         window.gapi.auth2.getAuthInstance().signOut();
         this.dialog = false;
         document.location.replace(window.location.origin);
