@@ -7,14 +7,14 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/feed/:feed',
-    name: 'FeedArticleList',
-    component: FeedArticleList,
-  },
-  {
     path: '/',
     name: 'Home',
     component: Home,
+  },
+  {
+    path: '/feed/:feed',
+    name: 'FeedArticleList',
+    component: FeedArticleList,
   },
 ]
 
