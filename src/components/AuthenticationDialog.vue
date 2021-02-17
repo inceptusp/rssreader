@@ -2,10 +2,18 @@
   <v-dialog v-model="dialog" max-width="600">
     <v-card>
       <v-layout align-center justify-center style="padding: 8px 0 0 0">
-        <v-btn text @click="loginOrSingUp = 'login'">{{ $t("Login") }}</v-btn>
-        <v-btn text @click="loginOrSingUp = 'signup'">{{
-          $t("Sign up")
-        }}</v-btn>
+        <v-btn
+          text
+          @click="loginOrSingUp = 'login'"
+          v-bind:color="loginOptionColor"
+          >{{ $t("Login") }}</v-btn
+        >
+        <v-btn
+          text
+          @click="loginOrSingUp = 'signup'"
+          v-bind:color="signupOptionColor"
+          >{{ $t("Sign up") }}</v-btn
+        >
       </v-layout>
       <v-layout align-center justify-center style="padding: 0 8px 8px 8px">
         <v-container fluid>
@@ -217,6 +225,14 @@ export default {
   },
 
   computed: {
+    loginOptionColor() {
+      return this.loginOrSingUp == 'login' ? '#00bfa5' : 'black';
+    },
+
+    signupOptionColor() {
+      return this.loginOrSingUp == 'signup' ? '#00bfa5' : 'black';
+    },
+
     passwordMatch() {
       return () =>
         this.password === this.repeatPassword ||
@@ -224,7 +240,7 @@ export default {
     },
 
     required(value) {
-      return value != '' || this.$t("This field is mandatory");
+      return value != "" || this.$t("This field is mandatory");
     },
 
     minLength(value) {
