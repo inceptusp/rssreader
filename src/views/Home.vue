@@ -8,7 +8,7 @@
           height="256"
           class="center"
         />
-        <h3 class="center text-h4">{{ $t("Welcome") + " " + userName }}</h3>
+        <h3 class="center text-h4">{{ $t("Welcome") + " " + (userName == null ? "" : userName) }}</h3>
         <h5 class="center text-subtitle-1">
           <div v-if="userName == null" id="welcome-subtitle">
             {{ $t("Welcome to RSS Reader, click on the top left corner to login or sign up so we can start") }}

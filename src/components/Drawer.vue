@@ -8,7 +8,7 @@
           style="max-height: 64px"
         >
           <v-list-item-avatar color="grey">
-            <v-icon color="white" v-if="userPhoto == ''">mdi-account</v-icon>
+            <v-icon color="white" v-if="userPhoto == null">mdi-account</v-icon>
             <v-img v-else>
               <img v-bind:src="userPhoto" referrerpolicy="no-referrer" />
             </v-img>
