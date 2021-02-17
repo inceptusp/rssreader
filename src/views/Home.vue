@@ -1,7 +1,7 @@
 <template>
-  <v-container fluid fill-height>
-    <v-layout align-center justify-center>
-      <v-list>
+  <v-layout align-center justify-center style="height: 100%; width: 100%">
+    <v-row>
+      <v-col>
         <v-img
           src="../assets/images/app_icon.png"
           width="256"
@@ -13,16 +13,19 @@
           <div v-if="userName == ''" id="welcome-subtitle">
             {{ $t("Welcome to RSS Reader, click on the top left corner to login or sign up so we can start") }}
           </div>
-          <div v-else-if="userName != '' && feedListLenght == 0" id="welcome-subtitle">
+          <div
+            v-else-if="userName != '' && feedListLenght == 0"
+            id="welcome-subtitle"
+          >
             {{ $t("Welcome to RSS Reader, click on the + button to add a new feed") }}
           </div>
           <div v-else id="welcome-subtitle">
             {{ $t("Welcome to RSS Reader, select a feed on the left to start") }}
           </div>
         </h5>
-      </v-list>
-    </v-layout>
-  </v-container>
+      </v-col>
+    </v-row>
+  </v-layout>
 </template>
 
 <script>
@@ -33,13 +36,15 @@ export default {
     this.sendFeedNameToAppBar();
     if (window.localStorage.getItem("user") != null) {
       this.userName = window.localStorage.getItem("user");
-      this.feedListLenght = Number.parseInt(window.localStorage.getItem("feeds"));
+      this.feedListLenght = Number.parseInt(
+        window.localStorage.getItem("feeds")
+      );
     }
   },
 
   data: () => ({
     userName: "",
-    feedListLenght: 0
+    feedListLenght: 0,
   }),
 
   methods: {
