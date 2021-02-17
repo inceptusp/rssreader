@@ -15,10 +15,10 @@
           </v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-title class="fade">{{
-              logged ? userName : "Welcome"
+              logged ? userName : $t("Welcome")
             }}</v-list-item-title>
             <v-list-item-subtitle>{{
-              logged ? "Sing out" : "Login or Sing Up"
+              logged ? $t("Sign out") : $t("Login or Sign Up")
             }}</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
@@ -36,7 +36,7 @@
               <v-icon>mdi-magnify</v-icon>
             </v-btn>
           </template>
-          <span>Search</span>
+          <span>{{ $t("Search") }}</span>
         </v-tooltip>
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
@@ -44,7 +44,7 @@
               <v-icon>mdi-plus-circle</v-icon>
             </v-btn>
           </template>
-          <span>New feed</span>
+          <span>{{ $t("New feed") }}</span>
         </v-tooltip>
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
@@ -52,7 +52,7 @@
               <v-icon>mdi-account</v-icon>
             </v-btn>
           </template>
-          <span>Account</span>
+          <span>{{ $t("Account") }}</span>
         </v-tooltip>
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
@@ -60,7 +60,7 @@
               <v-icon>mdi-cog</v-icon>
             </v-btn>
           </template>
-          <span>Settings</span>
+          <span>{{ $t("Settings") }}</span>
         </v-tooltip>
       </v-layout>
     </v-list-item>
@@ -70,7 +70,7 @@
     <v-text-field
       v-if="searchBar"
       v-model="search"
-      label="Search"
+      v-bind:label="$t('Search')"
       outlined
       hide-details="auto"
       style="padding: 8px"
@@ -80,7 +80,7 @@
 
     <v-list shaped>
       <v-list-item link to="/">
-        <v-list-item-title> Home </v-list-item-title>
+        <v-list-item-title>{{ $t("Home") }}</v-list-item-title>
       </v-list-item>
       <template v-if="logged">
         <v-list-item link to="/feed/rss091.xml">

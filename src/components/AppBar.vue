@@ -1,10 +1,11 @@
 <template>
   <v-app-bar flat app>
-    <v-app-bar-nav-icon
-      @click.stop="drawerControl"
-      class="hidden-md-and-up"
-    />
-    <v-toolbar-title>RSS Reader<div v-if="feedName != ''" style="display: inline;"> - </div>{{ feedName }}</v-toolbar-title>
+    <v-app-bar-nav-icon @click.stop="drawerControl" class="hidden-md-and-up" />
+    <v-toolbar-title>
+      {{ $t("RSS Reader") }}
+      <div v-if="feedName != ''" style="display: inline">-</div>
+      {{ feedName }}
+    </v-toolbar-title>
     <v-spacer />
     <v-tooltip bottom>
       <template v-slot:activator="{ on, attrs }">
@@ -12,7 +13,7 @@
           <v-icon>mdi-information</v-icon>
         </v-btn>
       </template>
-      <span>About</span>
+      <span>{{ $t("About") }}</span>
     </v-tooltip>
 
     <alertDialog
@@ -30,7 +31,7 @@ export default {
   name: "AlertDialog",
 
   props: {
-    feedName: { type: String }
+    feedName: { type: String },
   },
 
   components: {
@@ -38,13 +39,15 @@ export default {
   },
 
   mounted: function () {
-    this.aboutTitle = "About RSS Reader"
+    this.aboutTitle = this.$t("About") + " " + this.$t("RSS Reader");
     this.aboutContent =
       "© " +
       new Date().getFullYear() +
       " inceptusp" +
       "<br/><br/>" +
-      '<div>Service icon made by <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>';
+      this.$t(
+        '<div>App icon made by <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>'
+      );
   },
 
   data: () => ({
@@ -59,8 +62,8 @@ export default {
     },
 
     drawerControl() {
-        this.$emit('drawerControl');
-    }
+      this.$emit("drawerControl");
+    },
   },
 };
 </script>

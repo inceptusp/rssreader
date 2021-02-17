@@ -42,6 +42,7 @@
       v-model="showArticle"
       v-bind:title="article.title"
       v-bind:content="article.content"
+      v-bind:url="article.url"
     />
   </v-card>
 </template>

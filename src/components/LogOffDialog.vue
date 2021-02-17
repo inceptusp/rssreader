@@ -1,9 +1,9 @@
 <template>
   <v-dialog v-model="dialog" max-width="320px">
     <v-card>
-      <v-card-title class="headline">Are you sure?</v-card-title>
+      <v-card-title class="headline">{{ $t("Are you sure?") }}</v-card-title>
 
-      <v-card-text>Are you sure that you want to sign out?</v-card-text>
+      <v-card-text>{{ $t("Are you sure that you want to sign out?") }}</v-card-text>
 
       <v-card-actions>
         <v-spacer></v-spacer>
@@ -11,12 +11,12 @@
           color="#00bfa5"
           text
           v-on:click="dialog = false;"
-        >Close</v-btn>
+        >{{ $t("Close") }}</v-btn>
         <v-btn
           color="#00bfa5"
           text
           @click="signOut()"
-        >Sign out</v-btn>
+        >{{ $t("Sign out") }}</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -47,7 +47,7 @@ export default {
         window.localStorage.removeItem("uuid");
         window.gapi.auth2.getAuthInstance().signOut();
         this.dialog = false;
-        document.location.reload();
+        document.location.replace(window.location.origin);
     }
   },
 

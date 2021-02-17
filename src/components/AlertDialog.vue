@@ -11,7 +11,7 @@
           color="#00bfa5"
           text
           v-on:click="dialog = false;"
-        >Close</v-btn>
+        >{{ $t("Close") }}</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

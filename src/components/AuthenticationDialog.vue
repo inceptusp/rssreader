@@ -1,9 +1,11 @@
 <template>
-  <v-dialog v-model="dialog" max-width="500">
+  <v-dialog v-model="dialog" max-width="600">
     <v-card>
       <v-layout align-center justify-center style="padding: 8px 0 0 0">
-        <v-btn text @click="loginOrSingUp = 'login'">Login</v-btn>
-        <v-btn text @click="loginOrSingUp = 'signup'">Sing Up</v-btn>
+        <v-btn text @click="loginOrSingUp = 'login'">{{ $t("Login") }}</v-btn>
+        <v-btn text @click="loginOrSingUp = 'signup'">{{
+          $t("Sign up")
+        }}</v-btn>
       </v-layout>
       <v-layout align-center justify-center style="padding: 0 8px 8px 8px">
         <v-container fluid>
@@ -12,7 +14,7 @@
               <v-text-field
                 class="eight-padding"
                 v-model="email"
-                label="E-mail"
+                v-bind:label="$t('E-mail')"
                 v-bind:rules="[rules.required]"
                 outlined
                 full-width
@@ -21,7 +23,7 @@
               <v-text-field
                 class="eight-padding"
                 v-model="password"
-                label="Password"
+                v-bind:label="$t('Password')"
                 v-bind:append-icon="showPass1 ? 'mdi-eye' : 'mdi-eye-off'"
                 v-bind:type="showPass1 ? 'text' : 'password'"
                 v-bind:rules="[rules.required, rules.minLength]"
@@ -31,14 +33,27 @@
                 hide-details="auto"
               />
               <v-layout>
-                <div class="eight-padding" id="google-signin-button"></div>
+                <v-btn
+                  id="gBtn"
+                  style="margin: 8px"
+                  v-bind:loading="sending"
+                  v-bind:disabled="sending"
+                >
+                  <img
+                    src="../assets/images/google.png"
+                    referrerpolicy="no-referrer"
+                    width="30px"
+                    style="padding-right: 8px"
+                  />
+                  {{ $t("Login with Google") }}
+                </v-btn>
                 <v-spacer />
                 <v-btn
                   style="margin: 8px"
                   v-bind:loading="sending"
                   v-bind:disabled="sending"
                   @click="sendData()"
-                  >Login</v-btn
+                  >{{ $t("Login") }}</v-btn
                 >
               </v-layout>
             </v-form>
@@ -46,7 +61,7 @@
               <v-text-field
                 class="eight-padding"
                 v-model="name"
-                label="Name"
+                v-bind:label="$t('Name')"
                 v-bind:rules="[rules.required]"
                 outlined
                 full-width
@@ -55,7 +70,7 @@
               <v-text-field
                 class="eight-padding"
                 v-model="email"
-                label="E-mail"
+                v-bind:label="$t('E-mail')"
                 v-bind:rules="[rules.required]"
                 outlined
                 full-width
@@ -64,7 +79,7 @@
               <v-text-field
                 class="eight-padding"
                 v-model="password"
-                label="Password"
+                v-bind:label="$t('Password')"
                 v-bind:append-icon="showPass1 ? 'mdi-eye' : 'mdi-eye-off'"
                 v-bind:type="showPass1 ? 'text' : 'password'"
                 v-bind:rules="[rules.required, rules.minLength]"
@@ -76,7 +91,7 @@
               <v-text-field
                 class="eight-padding"
                 v-model="repeatPassword"
-                label="Repeat Password"
+                v-bind:label="$t('Repeat password')"
                 v-bind:append-icon="showPass2 ? 'mdi-eye' : 'mdi-eye-off'"
                 v-bind:type="showPass2 ? 'text' : 'password'"
                 v-bind:rules="[rules.required, rules.minLength, passwordMatch]"
@@ -86,14 +101,27 @@
                 hide-details="auto"
               />
               <v-layout>
-                <div class="eight-padding" id="google-signin-button"></div>
+                <v-btn
+                  id="gBtn"
+                  style="margin: 8px"
+                  v-bind:loading="sending"
+                  v-bind:disabled="sending"
+                >
+                  <img
+                    src="../assets/images/google.png"
+                    referrerpolicy="no-referrer"
+                    width="30px"
+                    style="padding-right: 8px"
+                  />
+                  {{ $t("Sign up with Google") }}
+                </v-btn>
                 <v-spacer />
                 <v-btn
                   style="margin: 8px"
                   v-bind:loading="sending"
                   v-bind:disabled="sending"
                   @click="sendData()"
-                  >Sign Up</v-btn
+                  >{{ $t("Sign up") }}</v-btn
                 >
               </v-layout>
             </v-form>
@@ -127,12 +155,12 @@ export default {
   mounted: function () {
     this.dialog = this.value;
   },
-  
+
   computed: {
     passwordMatch() {
       return () =>
         this.password === this.repeatPassword || "The passwords don't match";
-    }
+    },
   },
 
   data: () => ({
@@ -149,8 +177,8 @@ export default {
     errorContent: "",
     sending: false,
     rules: {
-      required: value => !!value || "This field is mandatory",
-      minLength: value => value.length >= 6 || "The password is to short"
+      required: (value) => !!value || "This field is mandatory",
+      minLength: (value) => value.length >= 6 || "The password is to short",
     },
   }),
 
@@ -274,10 +302,15 @@ export default {
     loginOrSingUp: function () {
       const selfVue = this;
       window.setTimeout(function () {
-        window.gapi.signin2.render("google-signin-button", {
-          longtitle: true,
-          onsuccess: selfVue.onSignIn,
-        });
+        window.gapi.auth2
+          .getAuthInstance()
+          .attachClickHandler(
+            document.getElementById("gBtn"),
+            {},
+            function (user) {
+              selfVue.sendData(user);
+            }
+          );
       }, 500);
     },
   },
