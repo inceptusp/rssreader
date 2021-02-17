@@ -50,7 +50,7 @@ export default {
 
   data: () => ({
     drawer: null,
-    feedName: "",
+    feedName: null,
   }),
 
   methods: {

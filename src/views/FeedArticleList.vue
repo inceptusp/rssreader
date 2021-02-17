@@ -42,7 +42,7 @@ export default {
                 .childNodes[0].nodeValue,
               content:
                 element.getElementsByTagName("content:encoded").length == 0
-                  ? ""
+                  ? null
                   : element.getElementsByTagName("content:encoded")[0]
                       .childNodes[0].nodeValue,
               url: element.getElementsByTagName("link")[0].childNodes[0]

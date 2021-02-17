@@ -3,7 +3,7 @@
     <v-app-bar-nav-icon @click.stop="drawerControl" class="hidden-md-and-up" />
     <v-toolbar-title>
       {{ $t("RSS Reader") }}
-      <div v-if="feedName != ''" style="display: inline">-</div>
+      <div v-if="feedName != null" style="display: inline">-</div>
       {{ feedName }}
     </v-toolbar-title>
     <v-spacer />
@@ -52,8 +52,8 @@ export default {
 
   data: () => ({
     showAbout: false,
-    aboutTitle: "",
-    aboutContent: "",
+    aboutTitle: null,
+    aboutContent: null,
   }),
 
   methods: {

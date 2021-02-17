@@ -13,7 +13,7 @@
     <v-card-subtitle v-html="article.description" style="text-align: justify" />
     <v-card-actions>
       <v-layout align-center justify-center>
-        <v-tooltip bottom v-if="article.content != ''">
+        <v-tooltip bottom v-if="article.content != null">
           <template v-slot:activator="{ on, attrs }">
             <v-btn icon v-bind="attrs" v-on="on" @click.stop="showFullArticle" large>
               <v-icon>mdi-book-open-variant</v-icon>

@@ -10,11 +10,11 @@
         />
         <h3 class="center text-h4">{{ $t("Welcome") + " " + userName }}</h3>
         <h5 class="center text-subtitle-1">
-          <div v-if="userName == ''" id="welcome-subtitle">
+          <div v-if="userName == null" id="welcome-subtitle">
             {{ $t("Welcome to RSS Reader, click on the top left corner to login or sign up so we can start") }}
           </div>
           <div
-            v-else-if="userName != '' && feedListLenght == 0"
+            v-else-if="userName != null && feedListLenght == 0"
             id="welcome-subtitle"
           >
             {{ $t("Welcome to RSS Reader, click on the + button to add a new feed") }}
@@ -43,13 +43,13 @@ export default {
   },
 
   data: () => ({
-    userName: "",
+    userName: null,
     feedListLenght: 0,
   }),
 
   methods: {
     sendFeedNameToAppBar() {
-      this.$emit("feedName", "");
+      this.$emit("feedName", null);
     },
   },
 };

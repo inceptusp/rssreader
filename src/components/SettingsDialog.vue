@@ -11,7 +11,7 @@
         <v-select
           v-bind:items="feedsOrderOptions"
           v-bind:label="
-            $vuetify.breakpoint.width < 960 ? $t('Order feeds list') : ''
+            $vuetify.breakpoint.width < 960 ? $t('Order feeds list') : null
           "
           outlined
           hide-details
