@@ -377,7 +377,9 @@ export default {
     },
 
     dialog: function () {
-      this.$refs.formRef.reset();
+      if (this.$refs.formRef != undefined) {
+        this.$refs.formRef.reset();
+      }
       this.$emit("input", this.dialog);
     },
 
