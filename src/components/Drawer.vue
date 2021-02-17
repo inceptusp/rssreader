@@ -3,7 +3,7 @@
     <template v-slot:prepend>
       <v-app-bar flat>
         <v-list-item
-          @click="showAccountDialog()"
+          @click="openAccountDialog()"
           two-line
           style="max-height: 64px"
         >
@@ -44,7 +44,7 @@
               icon
               v-bind="attrs"
               v-on="on"
-              @click.stop="showNewFeedDialog = !showNewFeedDialog"
+              @click.stop="openNewFeedDialog()"
             >
               <v-icon>mdi-plus-circle</v-icon>
             </v-btn>
@@ -57,9 +57,7 @@
               icon
               v-bind="attrs"
               v-on="on"
-              @click.stop="
-                showAccountSettingsDialog = !showAccountSettingsDialog
-              "
+              @click.stop="openAccountSettingsDialog()"
             >
               <v-icon>mdi-account</v-icon>
             </v-btn>
@@ -72,7 +70,7 @@
               icon
               v-bind="attrs"
               v-on="on"
-              @click.stop="showSettingsDialog = !showSettingsDialog"
+              @click.stop="openSettingsDialog()"
             >
               <v-icon>mdi-cog</v-icon>
             </v-btn>
@@ -156,10 +154,10 @@ export default {
     showAccountSettingsDialog: false,
     showSettingsDialog: false,
     showSignOutDialog: false,
-    userName: "",
-    userPhoto: "",
+    userName: null,
+    userPhoto: null,
     searchBar: false,
-    search: "",
+    search: null,
     logged: false,
   }),
 
@@ -174,7 +172,7 @@ export default {
   },
 
   methods: {
-    showAccountDialog() {
+    openAccountDialog() {
       if (!this.logged) {
         this.drawer = null;
         this.showAuthenticationDialog = !this.showAuthenticationDialog;
@@ -186,6 +184,21 @@ export default {
 
     openSearch() {
       this.searchBar = !this.searchBar;
+    },
+
+    openNewFeedDialog() {
+      this.drawer = null;
+      this.showNewFeedDialog = !this.showNewFeedDialog;
+    },
+
+    openAccountSettingsDialog() {
+      this.drawer = null;
+      this.showAccountSettingsDialog = !this.showAccountSettingsDialog;
+    },
+
+    openSettingsDialog() {
+      this.drawer = null;
+      this.showSettingsDialog = !this.showSettingsDialog;
     },
   },
 };
