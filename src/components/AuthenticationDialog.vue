@@ -33,28 +33,58 @@
                 hide-details="auto"
               />
               <v-layout>
-                <v-btn
-                  id="gBtn"
-                  style="margin: 8px"
-                  v-bind:loading="sending"
-                  v-bind:disabled="sending"
+                <v-row
+                  align="center"
+                  justify="center"
+                  style="padding: 8px 0 0 0"
+                  v-if="$vuetify.breakpoint.width < 960"
                 >
-                  <img
-                    src="../assets/images/google.png"
-                    referrerpolicy="no-referrer"
-                    width="30px"
-                    style="padding-right: 8px"
-                  />
-                  {{ $t("Login with Google") }}
-                </v-btn>
-                <v-spacer />
-                <v-btn
-                  style="margin: 8px"
-                  v-bind:loading="sending"
-                  v-bind:disabled="sending"
-                  @click="sendData()"
-                  >{{ $t("Login") }}</v-btn
-                >
+                  <v-btn
+                    id="gBtn"
+                    style="margin: 8px"
+                    v-bind:loading="sending"
+                    v-bind:disabled="sending"
+                  >
+                    <img
+                      src="../assets/images/google.png"
+                      referrerpolicy="no-referrer"
+                      width="30px"
+                      style="padding-right: 8px"
+                    />
+                    {{ $t("Login with Google") }}
+                  </v-btn>
+                  <v-btn
+                    style="margin: 8px"
+                    v-bind:loading="sending"
+                    v-bind:disabled="sending"
+                    @click="sendData()"
+                    >{{ $t("Login") }}</v-btn
+                  >
+                </v-row>
+                <v-layout v-else>
+                  <v-btn
+                    id="gBtn"
+                    style="margin: 8px"
+                    v-bind:loading="sending"
+                    v-bind:disabled="sending"
+                  >
+                    <img
+                      src="../assets/images/google.png"
+                      referrerpolicy="no-referrer"
+                      width="30px"
+                      style="padding-right: 8px"
+                    />
+                    {{ $t("Login with Google") }}
+                  </v-btn>
+                  <v-spacer />
+                  <v-btn
+                    style="margin: 8px"
+                    v-bind:loading="sending"
+                    v-bind:disabled="sending"
+                    @click="sendData()"
+                    >{{ $t("Login") }}</v-btn
+                  >
+                </v-layout>
               </v-layout>
             </v-form>
             <v-form v-if="loginOrSingUp == 'signup'" ref="formRef">
@@ -101,28 +131,58 @@
                 hide-details="auto"
               />
               <v-layout>
-                <v-btn
-                  id="gBtn"
-                  style="margin: 8px"
-                  v-bind:loading="sending"
-                  v-bind:disabled="sending"
+                <v-row
+                  align="center"
+                  justify="center"
+                  style="padding: 8px 0 0 0"
+                  v-if="$vuetify.breakpoint.width < 960"
                 >
-                  <img
-                    src="../assets/images/google.png"
-                    referrerpolicy="no-referrer"
-                    width="30px"
-                    style="padding-right: 8px"
-                  />
-                  {{ $t("Sign up with Google") }}
-                </v-btn>
-                <v-spacer />
-                <v-btn
-                  style="margin: 8px"
-                  v-bind:loading="sending"
-                  v-bind:disabled="sending"
-                  @click="sendData()"
-                  >{{ $t("Sign up") }}</v-btn
-                >
+                  <v-btn
+                    id="gBtn"
+                    style="margin: 8px"
+                    v-bind:loading="sending"
+                    v-bind:disabled="sending"
+                  >
+                    <img
+                      src="../assets/images/google.png"
+                      referrerpolicy="no-referrer"
+                      width="30px"
+                      style="padding-right: 8px"
+                    />
+                    {{ $t("Sign up with Google") }}
+                  </v-btn>
+                  <v-btn
+                    style="margin: 8px"
+                    v-bind:loading="sending"
+                    v-bind:disabled="sending"
+                    @click="sendData()"
+                    >{{ $t("Sign up") }}</v-btn
+                  >
+                </v-row>
+                <v-layout v-else>
+                  <v-btn
+                    id="gBtn"
+                    style="margin: 8px"
+                    v-bind:loading="sending"
+                    v-bind:disabled="sending"
+                  >
+                    <img
+                      src="../assets/images/google.png"
+                      referrerpolicy="no-referrer"
+                      width="30px"
+                      style="padding-right: 8px"
+                    />
+                    {{ $t("Sign up with Google") }}
+                  </v-btn>
+                  <v-spacer />
+                  <v-btn
+                    style="margin: 8px"
+                    v-bind:loading="sending"
+                    v-bind:disabled="sending"
+                    @click="sendData()"
+                    >{{ $t("Sign up") }}</v-btn
+                  >
+                </v-layout>
               </v-layout>
             </v-form>
           </v-list>
@@ -284,7 +344,7 @@ export default {
               window.localStorage.setItem("login", "provider");
             }
             window.localStorage.setItem("uuid", response.uuid);
-            window.localStorage.setItem("feeds", 0/*response.feeds*/);
+            window.localStorage.setItem("feeds", 0 /*response.feeds*/);
             selfVue.dialog = false;
             document.location.reload();
           }
