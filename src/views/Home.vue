@@ -10,13 +10,13 @@
         />
         <h3 class="center text-h4">{{ $t("Welcome") + " " + userName }}</h3>
         <h5 class="center text-subtitle-1">
-          <div v-if="userName == ''">
+          <div v-if="userName == ''" id="welcome-subtitle">
             {{ $t("Welcome to RSS Reader, click on the top left corner to login or sign up so we can start") }}
           </div>
-          <div v-else-if="userName != '' && feedListLenght == 0">
+          <div v-else-if="userName != '' && feedListLenght == 0" id="welcome-subtitle">
             {{ $t("Welcome to RSS Reader, click on the + button to add a new feed") }}
           </div>
-          <div v-else>
+          <div v-else id="welcome-subtitle">
             {{ $t("Welcome to RSS Reader, select a feed on the left to start") }}
           </div>
         </h5>
@@ -33,7 +33,7 @@ export default {
     this.sendFeedNameToAppBar();
     if (window.localStorage.getItem("user") != null) {
       this.userName = window.localStorage.getItem("user");
-      //this.feedListLenght = Number.parseInt(window.localStorage.getItem("feeds"));
+      this.feedListLenght = Number.parseInt(window.localStorage.getItem("feeds"));
     }
   },
 
@@ -56,5 +56,11 @@ export default {
   margin-left: auto;
   margin-right: auto;
   text-align: center;
+}
+
+#welcome-subtitle {
+  width: 80%;
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
 </style>

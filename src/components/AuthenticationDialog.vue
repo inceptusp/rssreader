@@ -257,11 +257,12 @@ export default {
             if (user == undefined) {
               if (selfVue.loginOrSingUp == "login") {
                 window.localStorage.setItem("user", response.name);
+                window.localStorage.setItem("pic", response.imageUrl);
               } else {
                 window.localStorage.setItem("user", selfVue.name);
+                window.localStorage.setItem("pic", "");
               }
               window.localStorage.setItem("email", selfVue.email);
-              window.localStorage.setItem("pic", "");
               window.localStorage.setItem("login", "server");
             } else {
               window.localStorage.setItem(
@@ -272,13 +273,18 @@ export default {
                 "email",
                 user.getBasicProfile().getEmail()
               );
-              window.localStorage.setItem(
-                "pic",
-                user.getBasicProfile().getImageUrl()
-              );
+              if (selfVue.loginOrSingUp == "login") {
+                window.localStorage.setItem("pic", response.imageUrl);
+              } else {
+                window.localStorage.setItem(
+                  "pic",
+                  user.getBasicProfile().getImageUrl()
+                );
+              }
               window.localStorage.setItem("login", "provider");
             }
             window.localStorage.setItem("uuid", response.uuid);
+            window.localStorage.setItem("feeds", 0/*response.feeds*/);
             selfVue.dialog = false;
             document.location.reload();
           }
