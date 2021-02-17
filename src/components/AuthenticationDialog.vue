@@ -224,7 +224,7 @@ export default {
     },
 
     required(value) {
-      return value === '' || this.$t("This field is mandatory");
+      return value != '' || this.$t("This field is mandatory");
     },
 
     minLength(value) {
