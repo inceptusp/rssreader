@@ -4,14 +4,19 @@
       <v-card-title>{{ $t("Settings") }}</v-card-title>
 
       <v-layout align-center justify-center style="padding: 0px 24px">
-        <div>{{ $t("Order feeds list") }}</div>
-        <v-spacer />
+        <div v-if="$vuetify.breakpoint.width > 960">
+          {{ $t("Order feeds list") }}
+        </div>
+        <v-spacer v-if="$vuetify.breakpoint.width > 960" />
         <v-select
           v-bind:items="feedsOrderOptions"
+          v-bind:label="
+            $vuetify.breakpoint.width < 960 ? $t('Order feeds list') : ''
+          "
           outlined
           hide-details
           v-model="settings.feedsOrder"
-          style="width: 40%;"
+          style="width: 40%"
         />
       </v-layout>
       <v-layout align-center justify-center style="padding: 0px 24px">
