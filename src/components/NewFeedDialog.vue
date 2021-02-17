@@ -6,7 +6,7 @@
 
 <script>
 export default {
-  name: "SettingsDialog",
+  name: "NewFeedDialog",
 
   props: {
     value: { type: Boolean },

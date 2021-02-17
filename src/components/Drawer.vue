@@ -24,8 +24,8 @@
         </v-list-item>
       </v-app-bar>
 
-      <authenticationDialog v-model="accountDialog" />
-      <logOffDialog v-model="signOutDialog" />
+      <authenticationDialog v-model="showAuthenticationDialog" />
+      <logOffDialog v-model="showSignOutDialog" />
     </template>
 
     <v-list-item v-if="logged">
@@ -40,7 +40,12 @@
         </v-tooltip>
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn icon v-bind="attrs" v-on="on" @click.stop="">
+            <v-btn
+              icon
+              v-bind="attrs"
+              v-on="on"
+              @click.stop="showNewFeedDialog = !showNewFeedDialog"
+            >
               <v-icon>mdi-plus-circle</v-icon>
             </v-btn>
           </template>
@@ -48,7 +53,14 @@
         </v-tooltip>
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn icon v-bind="attrs" v-on="on" @click.stop="">
+            <v-btn
+              icon
+              v-bind="attrs"
+              v-on="on"
+              @click.stop="
+                showAccountSettingsDialog = !showAccountSettingsDialog
+              "
+            >
               <v-icon>mdi-account</v-icon>
             </v-btn>
           </template>
@@ -56,13 +68,22 @@
         </v-tooltip>
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn icon v-bind="attrs" v-on="on" @click.stop="">
+            <v-btn
+              icon
+              v-bind="attrs"
+              v-on="on"
+              @click.stop="showSettingsDialog = !showSettingsDialog"
+            >
               <v-icon>mdi-cog</v-icon>
             </v-btn>
           </template>
           <span>{{ $t("Settings") }}</span>
         </v-tooltip>
       </v-layout>
+
+      <newFeedDialog v-model="showNewFeedDialog" />
+      <accountSettingsDialog v-model="showAccountSettingsDialog" />
+      <settingsDialog v-model="showSettingsDialog" />
     </v-list-item>
 
     <v-divider v-if="logged" />
@@ -100,6 +121,9 @@
 <script>
 import AuthenticationDialog from "../components/AuthenticationDialog.vue";
 import LogOffDialog from "../components/LogOffDialog.vue";
+import NewFeedDialog from "../components/NewFeedDialog.vue";
+import AccountSettingsDialog from "../components/AccountSettingsDialog.vue";
+import SettingsDialog from "../components/SettingsDialog.vue";
 
 export default {
   name: "Drawer",
@@ -107,6 +131,9 @@ export default {
   components: {
     authenticationDialog: AuthenticationDialog,
     logOffDialog: LogOffDialog,
+    newFeedDialog: NewFeedDialog,
+    accountSettingsDialog: AccountSettingsDialog,
+    settingsDialog: SettingsDialog,
   },
 
   props: {
@@ -124,8 +151,11 @@ export default {
 
   data: () => ({
     drawer: null,
-    accountDialog: false,
-    signOutDialog: false,
+    showAuthenticationDialog: false,
+    showNewFeedDialog: false,
+    showAccountSettingsDialog: false,
+    showSettingsDialog: false,
+    showSignOutDialog: false,
     userName: "",
     userPhoto: "",
     searchBar: false,
@@ -147,10 +177,10 @@ export default {
     showAccountDialog() {
       if (!this.logged) {
         this.drawer = null;
-        this.accountDialog = !this.accountDialog;
+        this.showAuthenticationDialog = !this.showAuthenticationDialog;
       } else {
         this.drawer = null;
-        this.signOutDialog = !this.signOutDialog;
+        this.showSignOutDialog = !this.showSignOutDialog;
       }
     },
 
