@@ -15,7 +15,7 @@
                 class="eight-padding"
                 v-model="email"
                 v-bind:label="$t('E-mail')"
-                v-bind:rules="[rules.required]"
+                v-bind:rules="[required]"
                 outlined
                 full-width
                 hide-details="auto"
@@ -26,7 +26,7 @@
                 v-bind:label="$t('Password')"
                 v-bind:append-icon="showPass1 ? 'mdi-eye' : 'mdi-eye-off'"
                 v-bind:type="showPass1 ? 'text' : 'password'"
-                v-bind:rules="[rules.required, rules.minLength]"
+                v-bind:rules="[required, minLength]"
                 @click:append="showPass1 = !showPass1"
                 outlined
                 full-width
@@ -92,7 +92,7 @@
                 class="eight-padding"
                 v-model="name"
                 v-bind:label="$t('Name')"
-                v-bind:rules="[rules.required]"
+                v-bind:rules="[required]"
                 outlined
                 full-width
                 hide-details="auto"
@@ -101,7 +101,7 @@
                 class="eight-padding"
                 v-model="email"
                 v-bind:label="$t('E-mail')"
-                v-bind:rules="[rules.required]"
+                v-bind:rules="[required]"
                 outlined
                 full-width
                 hide-details="auto"
@@ -112,7 +112,7 @@
                 v-bind:label="$t('Password')"
                 v-bind:append-icon="showPass1 ? 'mdi-eye' : 'mdi-eye-off'"
                 v-bind:type="showPass1 ? 'text' : 'password'"
-                v-bind:rules="[rules.required, rules.minLength]"
+                v-bind:rules="[required, minLength]"
                 @click:append="showPass1 = !showPass1"
                 outlined
                 full-width
@@ -124,7 +124,7 @@
                 v-bind:label="$t('Repeat password')"
                 v-bind:append-icon="showPass2 ? 'mdi-eye' : 'mdi-eye-off'"
                 v-bind:type="showPass2 ? 'text' : 'password'"
-                v-bind:rules="[rules.required, rules.minLength, passwordMatch]"
+                v-bind:rules="[required, minLength, passwordMatch]"
                 @click:append="showPass2 = !showPass2"
                 outlined
                 full-width
@@ -219,7 +219,16 @@ export default {
   computed: {
     passwordMatch() {
       return () =>
-        this.password === this.repeatPassword || "The passwords don't match";
+        this.password === this.repeatPassword ||
+        this.$t("The passwords don't match");
+    },
+
+    required(value) {
+      return value === '' || this.$t("This field is mandatory");
+    },
+
+    minLength(value) {
+      return value.length >= 6 || this.$t("The password is to short");
     },
   },
 
@@ -236,10 +245,6 @@ export default {
     errorTitle: "",
     errorContent: "",
     sending: false,
-    rules: {
-      required: (value) => !!value || "This field is mandatory",
-      minLength: (value) => value.length >= 6 || "The password is to short",
-    },
   }),
 
   methods: {
