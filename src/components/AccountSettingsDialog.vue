@@ -68,11 +68,11 @@
         </v-layout>
         <v-layout align-center justify-center style="padding: 4px 24px">
           <div v-if="$vuetify.breakpoint.width > 960">
-            {{ $t("E-mail") }}
+            {{ $t("Email") }}
           </div>
           <v-spacer v-if="$vuetify.breakpoint.width > 960" />
           <v-text-field
-            v-bind:label="$vuetify.breakpoint.width < 960 ? $t('E-mail') : null"
+            v-bind:label="$vuetify.breakpoint.width < 960 ? $t('Email') : null"
             outlined
             hide-details="auto"
             v-model="email"
