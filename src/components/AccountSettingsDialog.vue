@@ -92,6 +92,9 @@
             hide-details="auto"
             v-model="password"
             v-bind:rules="[required]"
+            v-bind:append-icon="showPass ? 'mdi-eye' : 'mdi-eye-off'"
+            v-bind:type="showPass ? 'text' : 'password'"
+            @click:append="showPass = !showPass"
             class="input-width"
           />
         </v-layout>
@@ -120,6 +123,9 @@
               hide-details="auto"
               v-model="newPassword"
               v-bind:rules="[minLength]"
+              v-bind:append-icon="showNewPass ? 'mdi-eye' : 'mdi-eye-off'"
+              v-bind:type="showNewPass ? 'text' : 'password'"
+              @click:append="showNewPass = !showNewPass"
               class="input-width"
             />
           </v-layout>
@@ -136,6 +142,9 @@
               hide-details="auto"
               v-model="repeatNewPassword"
               v-bind:rules="[minLength, passwordMatch]"
+              v-bind:append-icon="showRepNewPass ? 'mdi-eye' : 'mdi-eye-off'"
+              v-bind:type="showRepNewPass ? 'text' : 'password'"
+              @click:append="showRepNewPass = !showRepNewPass"
               class="input-width"
             />
           </v-layout>
@@ -184,8 +193,8 @@ export default {
       return (value) => !!value || this.$t("This field is mandatory");
     },
 
-    minLength(value) {
-      return value.length >= 6 || this.$t("The password is to short");
+    minLength() {
+      return (value) => value.length >= 6 || this.$t("The password is to short");
     },
   },
 
@@ -195,9 +204,12 @@ export default {
     userName: null,
     email: null,
     password: null,
+    showPass: false,
     changePassword: false,
     newPassword: null,
+    showNewPass: false,
     repeatNewPassword: null,
+    showRepNewPass: false,
   }),
 
   methods: {
