@@ -1,11 +1,15 @@
 <template>
   <v-app>
-    <appBar @drawerControl="openCloseDrawer" v-bind:feedName="feedName" />
+    <appBar v-model="drawer" v-bind:feedName="feedName" />
 
     <drawer v-model="drawer" />
 
     <v-main>
-      <router-view :key="$route.fullPath" @feedName="sendFeedNameToAppBar" />
+      <router-view
+        v-bind:key="$route.fullPath"
+        @feedName="sendFeedNameToAppBar"
+        @drawerControl="openCloseDrawer"
+      />
     </v-main>
   </v-app>
 </template>
@@ -54,8 +58,8 @@ export default {
   }),
 
   methods: {
-    openCloseDrawer() {
-      this.drawer = !this.drawer;
+    openCloseDrawer(drawer) {
+      this.drawer = drawer;
     },
 
     sendFeedNameToAppBar(name) {
@@ -63,11 +67,11 @@ export default {
     },
 
     loadSettings() {
-      if (window.localStorage.getItem("settings") != null){
+      if (window.localStorage.getItem("settings") != null) {
         var settings = JSON.parse(window.localStorage.getItem("settings"));
         this.$vuetify.theme.dark = settings.darkMode;
       }
-    }
+    },
   },
 };
 </script>

@@ -1,6 +1,17 @@
 <template>
   <v-app-bar flat app>
-    <v-app-bar-nav-icon @click.stop="drawerControl" class="hidden-md-and-up" />
+    <v-app-bar-nav-icon
+      v-if="
+        $router.currentRoute.path.search('confirmEmail') != -1 ||
+        $router.currentRoute.path.search('redefinePassword') != -1
+      "
+      class="hidden-lg-and-down"
+    />
+    <v-app-bar-nav-icon
+      v-else
+      @click.stop="drawerControl"
+      class="hidden-md-and-up"
+    />
     <v-toolbar-title>
       {{ $t("RSS Reader") }}
       <div v-if="feedName != null" style="display: inline">-</div>
@@ -53,6 +64,7 @@ export default {
   name: "AlertDialog",
 
   props: {
+    value: { type: Boolean },
     feedName: { type: String },
   },
 
@@ -61,6 +73,7 @@ export default {
   },
 
   mounted: function () {
+    this.drawer = this.value;
     this.locale = navigator.languages[0].split("-")[0];
     this.aboutTitle = this.$t("About") + " " + this.$t("RSS Reader");
     this.aboutContent =
@@ -83,6 +96,7 @@ export default {
   },
 
   data: () => ({
+    drawer: null,
     showAbout: false,
     aboutTitle: null,
     aboutContent: null,
@@ -96,11 +110,20 @@ export default {
     },
 
     drawerControl() {
-      this.$emit("drawerControl");
+      this.drawer = !this.drawer;
+      this.$emit("drawerControl", this.drawer);
     },
   },
 
   watch: {
+    value: function () {
+      this.drawer = this.value;
+    },
+
+    drawer: function () {
+      this.$emit("input", this.drawer);
+    },
+
     locale: function () {
       this.$i18n.locale = this.locale;
       this.settings.locale = this.locale;
