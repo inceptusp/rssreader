@@ -229,8 +229,7 @@ export default {
     dialog: function () {
       if (this.$refs.formRef != undefined) {
         this.changePassword = false;
-        this.$refs.formRef.reset();
-        window.location.reload();
+        this.$refs.formRef.resetValidation();
       }
       this.$emit("input", this.dialog);
     },
