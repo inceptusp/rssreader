@@ -23,7 +23,7 @@
         </v-tooltip>
       </template>
       <v-list>
-        <v-radio-group v-model="locale" style="padding: 0 24px 0 24px;">
+        <v-radio-group v-model="locale" style="padding: 0 24px 0 24px">
           <v-radio label="English" value="en" />
           <v-radio label="Português" value="pt" />
         </v-radio-group>
@@ -67,9 +67,14 @@ export default {
       "© " +
       new Date().getFullYear() +
       " inceptusp" +
-      "<br/><br/>" +
+      "<br /><br />" +
+      '<a href="/#/policy">' +
+      this.$t("Privacy policy") +
+      '</a><br/><a href="/#/terms">' +
+      this.$t("Terms of use") +
+      "</a><br /><br />" +
       this.$t(
-        '<div>App icon made by <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>'
+        '<div>App icon made by <a href="https://www.freepik.com" target="_blank" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" target="_blank" title="Flaticon">www.flaticon.com</a></div>'
       );
     if (window.localStorage.getItem("settings") != null) {
       this.settings = JSON.parse(window.localStorage.getItem("settings"));
@@ -100,7 +105,7 @@ export default {
       this.$i18n.locale = this.locale;
       this.settings.locale = this.locale;
       window.localStorage.setItem("settings", JSON.stringify(this.settings));
-    }
+    },
   },
 };
 </script>
