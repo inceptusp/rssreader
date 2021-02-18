@@ -19,13 +19,13 @@
       <v-form v-if="loginOrSingUp == 'login'" ref="formRef">
         <v-layout align-center justify-center style="padding: 4px 24px">
           <div v-if="$vuetify.breakpoint.width > 960">
-            {{ $t("E-mail") }}
+            {{ $t("Email") }}
           </div>
           <v-spacer v-if="$vuetify.breakpoint.width > 960" />
           <v-text-field
             class="input-width"
             v-model="email"
-            v-bind:label="$vuetify.breakpoint.width < 960 ? $t('E-mail') : null"
+            v-bind:label="$vuetify.breakpoint.width < 960 ? $t('Email') : null"
             v-bind:rules="[required]"
             outlined
             hide-details="auto"
@@ -49,6 +49,10 @@
             outlined
             hide-details="auto"
           />
+        </v-layout>
+        <v-layout align-center justify-center style="padding: 4px 24px">
+          <v-spacer v-if="$vuetify.breakpoint.width > 960" />
+          <div><a @click="forgotPassword()">{{ $t("Forgot my password") }}</a></div>
         </v-layout>
         <v-layout
           align-center
@@ -127,13 +131,13 @@
         </v-layout>
         <v-layout align-center justify-center style="padding: 4px 24px">
           <div v-if="$vuetify.breakpoint.width > 960">
-            {{ $t("E-mail") }}
+            {{ $t("Email") }}
           </div>
           <v-spacer v-if="$vuetify.breakpoint.width > 960" />
           <v-text-field
             class="input-width"
             v-model="email"
-            v-bind:label="$vuetify.breakpoint.width < 960 ? $t('E-mail') : null"
+            v-bind:label="$vuetify.breakpoint.width < 960 ? $t('Email') : null"
             v-bind:rules="[required]"
             outlined
             hide-details="auto"
@@ -280,7 +284,7 @@ export default {
     },
 
     minLength() {
-      return (value) => value.length >= 6 || this.$t("The password is to short");
+      return (value) => (value != null) && (value.length >= 6) || this.$t("The password is to short");
     },
   },
 
@@ -306,6 +310,12 @@ export default {
 
     showErrorDialog() {
       this.errorDialog = !this.errorDialog;
+    },
+
+    forgotPassword() {
+      this.errorTitle = this.$t("A recovery email has been sent");
+      this.errorContent = this.$t("We have sent a password recovery email to your inbox. Check it (or the spam folder) for more instructions.");
+      this.showErrorDialog();
     },
 
     sendData(user) {
