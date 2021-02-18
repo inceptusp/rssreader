@@ -279,8 +279,8 @@ export default {
       return (value) => !!value || this.$t("This field is mandatory");
     },
 
-    minLength(value) {
-      return value.length >= 6 || this.$t("The password is to short");
+    minLength() {
+      return (value) => value.length >= 6 || this.$t("The password is to short");
     },
   },
 
