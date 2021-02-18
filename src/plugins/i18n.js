@@ -14,6 +14,8 @@ const messages = {
        "Change photo":"Aterar foto",
        "Change password":"Alterar senha",
        "New password":"Nova senha",
+       "Delete account":"Apagar conta",
+       "Link to Google":"Conectar ao Google",
        "Cancel":"Cancelar",
        "Save":"Salvar",
        "Close":"Fechar",

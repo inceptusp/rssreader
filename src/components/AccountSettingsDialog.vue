@@ -149,6 +149,24 @@
             />
           </v-layout>
         </div>
+        <v-layout align-center justify-center style="padding: 4px 24px">
+          <v-row align="center" justify="center" style="padding: 8px 0 8px 0">
+            <v-spacer v-if="$vuetify.breakpoint.width > 960" />
+            <v-btn id="gBtn" style="margin: 8px">
+              <img
+                src="../assets/images/google.png"
+                referrerpolicy="no-referrer"
+                width="30px"
+                style="padding-right: 8px"
+              />
+              {{ $t("Link to Google") }}
+            </v-btn>
+            <v-btn class="white--text" color="red" @click="deleteAccount()">{{
+              $t("Delete account")
+            }}</v-btn>
+            <v-spacer v-if="$vuetify.breakpoint.width > 960" />
+          </v-row>
+        </v-layout>
       </v-form>
 
       <v-card-actions>
@@ -194,7 +212,8 @@ export default {
     },
 
     minLength() {
-      return (value) => value.length >= 6 || this.$t("The password is to short");
+      return (value) =>
+        value.length >= 6 || this.$t("The password is to short");
     },
   },
 
@@ -226,6 +245,8 @@ export default {
       });
     },
 
+    deleteAccount() {},
+
     saveSettings() {
       if (this.$refs.formRef.validate()) {
         this.dialog = false;
@@ -236,6 +257,19 @@ export default {
   watch: {
     value: function () {
       this.dialog = this.value;
+      const selfVue = this;
+      window.setTimeout(function () {
+        window.gapi.auth2
+          .getAuthInstance()
+          .attachClickHandler(
+            document.getElementById("gBtn"),
+            {},
+            function (user) {
+              selfVue.dialog = false;
+              console.log(user);
+            }
+          );
+      }, 500);
     },
 
     dialog: function () {
