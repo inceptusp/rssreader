@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="dialog" max-width="320px">
     <v-card>
-      <v-card-title class="headline"><div v-html="title"/></v-card-title>
+      <v-card-title class="headline" style="word-break: break-word;"><div v-html="title"/></v-card-title>
 
       <v-card-text><div v-html="content"/></v-card-text>
 
