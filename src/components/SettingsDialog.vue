@@ -16,7 +16,7 @@
           outlined
           hide-details
           v-model="settings.feedsOrder"
-          style="width: 40%"
+          class="input-width"
         />
       </v-layout>
       <v-layout align-center justify-center style="padding: 0px 24px">
@@ -106,3 +106,11 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+@media only screen and (min-width: 960px) {
+  .input-width {
+    max-width: 300px !important;
+  }
+}
+</style>

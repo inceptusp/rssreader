@@ -3,38 +3,53 @@
     <v-card>
       <v-card-title>{{ $t("Add a new feed") }}</v-card-title>
 
-      <v-layout align-center justify-center style="padding: 0px 4px">
-        <v-container fluid>
-          <v-form ref="formRef">
-            <v-text-field
-              class="eight-padding"
-              v-model="name"
-              v-bind:label="$t('Name')"
-              v-bind:rules="[required]"
-              outlined
-              hide-details="auto"
-            />
-            <v-text-field
-              class="eight-padding"
-              v-model="link"
-              v-bind:label="$t('Feed link')"
-              v-bind:rules="[required]"
-              outlined
-              hide-details="auto"
-            />
-            <v-combobox
-              class="eight-padding"
-              v-model="categories"
-              v-bind:label="$t('Categories')"
-              append-icon=""
-              outlined
-              multiple
-              small-chips
-              deletable-chips
-            />
-          </v-form>
-        </v-container>
-      </v-layout>
+      <v-form ref="formRef">
+        <v-layout align-center justify-center style="padding: 4px 24px">
+          <div v-if="$vuetify.breakpoint.width > 960">
+            {{ $t("Name") }}
+          </div>
+          <v-spacer v-if="$vuetify.breakpoint.width > 960" />
+          <v-text-field
+            class="input-width"
+            v-model="name"
+            v-bind:label="$vuetify.breakpoint.width < 960 ? $t('Name') : null"
+            v-bind:rules="[required]"
+            outlined
+            hide-details="auto"
+          />
+        </v-layout>
+        <v-layout align-center justify-center style="padding: 4px 24px">
+          <div v-if="$vuetify.breakpoint.width > 960">
+            {{ $t("Feed link") }}
+          </div>
+          <v-spacer v-if="$vuetify.breakpoint.width > 960" />
+          <v-text-field
+            class="input-width"
+            v-model="link"
+            v-bind:label="$vuetify.breakpoint.width < 960 ? $t('Feed link') : null"
+            v-bind:rules="[required]"
+            outlined
+            hide-details="auto"
+          />
+        </v-layout>
+        <v-layout align-center justify-center style="padding: 4px 24px">
+          <div v-if="$vuetify.breakpoint.width > 960">
+            {{ $t("Categories") }}
+          </div>
+          <v-spacer v-if="$vuetify.breakpoint.width > 960" />
+          <v-combobox
+            class="input-width"
+            v-model="categories"
+            v-bind:label="$vuetify.breakpoint.width < 960 ? $t('Categories') : null"
+            append-icon=""
+            hide-details="auto"
+            outlined
+            multiple
+            small-chips
+            deletable-chips
+          />
+        </v-layout>
+      </v-form>
 
       <v-card-actions>
         <v-spacer></v-spacer>
@@ -98,7 +113,9 @@ export default {
 </script>
 
 <style scoped>
-.eight-padding {
-  padding: 8px !important;
+@media only screen and (min-width: 960px) {
+  .input-width {
+    max-width: 300px !important;
+  }
 }
 </style>

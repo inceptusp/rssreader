@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="dialog" max-width="600">
     <v-card>
-      <v-layout align-center justify-center style="padding: 8px 0 0 0">
+      <v-layout align-center justify-center style="padding: 8px">
         <v-btn
           text
           @click="loginOrSingUp = 'login'"
@@ -15,181 +15,223 @@
           >{{ $t("Sign up") }}</v-btn
         >
       </v-layout>
-      <v-layout align-center justify-center style="padding: 0 8px 8px 8px">
-        <v-container fluid>
-          <v-list>
-            <v-form v-if="loginOrSingUp == 'login'" ref="formRef">
-              <v-text-field
-                class="eight-padding"
-                v-model="email"
-                v-bind:label="$t('E-mail')"
-                v-bind:rules="[required]"
-                outlined
-                hide-details="auto"
-              />
-              <v-text-field
-                class="eight-padding"
-                v-model="password"
-                v-bind:label="$t('Password')"
-                v-bind:append-icon="showPass1 ? 'mdi-eye' : 'mdi-eye-off'"
-                v-bind:type="showPass1 ? 'text' : 'password'"
-                v-bind:rules="[required, minLength]"
-                @click:append="showPass1 = !showPass1"
-                outlined
-                hide-details="auto"
-              />
-              <v-layout>
-                <v-row
-                  align="center"
-                  justify="center"
-                  style="padding: 8px 0 0 0"
-                  v-if="$vuetify.breakpoint.width < 960"
-                >
-                  <v-btn
-                    id="gBtn"
-                    style="margin: 8px"
-                    v-bind:loading="sending"
-                    v-bind:disabled="sending"
-                  >
-                    <img
-                      src="../assets/images/google.png"
-                      referrerpolicy="no-referrer"
-                      width="30px"
-                      style="padding-right: 8px"
-                    />
-                    {{ $t("Login with Google") }}
-                  </v-btn>
-                  <v-btn
-                    style="margin: 8px"
-                    v-bind:loading="sending"
-                    v-bind:disabled="sending"
-                    @click="sendData()"
-                    >{{ $t("Login") }}</v-btn
-                  >
-                </v-row>
-                <v-layout v-else>
-                  <v-btn
-                    id="gBtn"
-                    style="margin: 8px"
-                    v-bind:loading="sending"
-                    v-bind:disabled="sending"
-                  >
-                    <img
-                      src="../assets/images/google.png"
-                      referrerpolicy="no-referrer"
-                      width="30px"
-                      style="padding-right: 8px"
-                    />
-                    {{ $t("Login with Google") }}
-                  </v-btn>
-                  <v-spacer />
-                  <v-btn
-                    style="margin: 8px"
-                    v-bind:loading="sending"
-                    v-bind:disabled="sending"
-                    @click="sendData()"
-                    >{{ $t("Login") }}</v-btn
-                  >
-                </v-layout>
-              </v-layout>
-            </v-form>
-            <v-form v-if="loginOrSingUp == 'signup'" ref="formRef">
-              <v-text-field
-                class="eight-padding"
-                v-model="name"
-                v-bind:label="$t('Name')"
-                v-bind:rules="[required]"
-                outlined
-                hide-details="auto"
-              />
-              <v-text-field
-                class="eight-padding"
-                v-model="email"
-                v-bind:label="$t('E-mail')"
-                v-bind:rules="[required]"
-                outlined
-                hide-details="auto"
-              />
-              <v-text-field
-                class="eight-padding"
-                v-model="password"
-                v-bind:label="$t('Password')"
-                v-bind:append-icon="showPass1 ? 'mdi-eye' : 'mdi-eye-off'"
-                v-bind:type="showPass1 ? 'text' : 'password'"
-                v-bind:rules="[required, minLength]"
-                @click:append="showPass1 = !showPass1"
-                outlined
-                hide-details="auto"
-              />
-              <v-text-field
-                class="eight-padding"
-                v-model="repeatPassword"
-                v-bind:label="$t('Repeat password')"
-                v-bind:append-icon="showPass2 ? 'mdi-eye' : 'mdi-eye-off'"
-                v-bind:type="showPass2 ? 'text' : 'password'"
-                v-bind:rules="[required, minLength, passwordMatch]"
-                @click:append="showPass2 = !showPass2"
-                outlined
-                hide-details="auto"
-              />
-              <v-layout>
-                <v-row
-                  align="center"
-                  justify="center"
-                  style="padding: 8px 0 0 0"
-                  v-if="$vuetify.breakpoint.width < 960"
-                >
-                  <v-btn
-                    id="gBtn"
-                    style="margin: 8px"
-                    v-bind:loading="sending"
-                    v-bind:disabled="sending"
-                  >
-                    <img
-                      src="../assets/images/google.png"
-                      referrerpolicy="no-referrer"
-                      width="30px"
-                      style="padding-right: 8px"
-                    />
-                    {{ $t("Sign up with Google") }}
-                  </v-btn>
-                  <v-btn
-                    style="margin: 8px"
-                    v-bind:loading="sending"
-                    v-bind:disabled="sending"
-                    @click="sendData()"
-                    >{{ $t("Sign up") }}</v-btn
-                  >
-                </v-row>
-                <v-layout v-else>
-                  <v-btn
-                    id="gBtn"
-                    style="margin: 8px"
-                    v-bind:loading="sending"
-                    v-bind:disabled="sending"
-                  >
-                    <img
-                      src="../assets/images/google.png"
-                      referrerpolicy="no-referrer"
-                      width="30px"
-                      style="padding-right: 8px"
-                    />
-                    {{ $t("Sign up with Google") }}
-                  </v-btn>
-                  <v-spacer />
-                  <v-btn
-                    style="margin: 8px"
-                    v-bind:loading="sending"
-                    v-bind:disabled="sending"
-                    @click="sendData()"
-                    >{{ $t("Sign up") }}</v-btn
-                  >
-                </v-layout>
-              </v-layout>
-            </v-form>
-          </v-list>
-        </v-container>
-      </v-layout>
+
+      <v-form v-if="loginOrSingUp == 'login'" ref="formRef">
+        <v-layout align-center justify-center style="padding: 4px 24px">
+          <div v-if="$vuetify.breakpoint.width > 960">
+            {{ $t("E-mail") }}
+          </div>
+          <v-spacer v-if="$vuetify.breakpoint.width > 960" />
+          <v-text-field
+            class="input-width"
+            v-model="email"
+            v-bind:label="$vuetify.breakpoint.width < 960 ? $t('E-mail') : null"
+            v-bind:rules="[required]"
+            outlined
+            hide-details="auto"
+          />
+        </v-layout>
+        <v-layout align-center justify-center style="padding: 4px 24px">
+          <div v-if="$vuetify.breakpoint.width > 960">
+            {{ $t("Password") }}
+          </div>
+          <v-spacer v-if="$vuetify.breakpoint.width > 960" />
+          <v-text-field
+            class="input-width"
+            v-model="password"
+            v-bind:label="
+              $vuetify.breakpoint.width < 960 ? $t('Password') : null
+            "
+            v-bind:append-icon="showPass1 ? 'mdi-eye' : 'mdi-eye-off'"
+            v-bind:type="showPass1 ? 'text' : 'password'"
+            v-bind:rules="[required, minLength]"
+            @click:append="showPass1 = !showPass1"
+            outlined
+            hide-details="auto"
+          />
+        </v-layout>
+        <v-layout
+          align-center
+          justify-center
+          style="padding: 8px 24px 16px 24px"
+        >
+          <v-layout>
+            <v-row
+              align="center"
+              justify="center"
+              style="padding: 8px 0 0 0"
+              v-if="$vuetify.breakpoint.width < 960"
+            >
+              <v-btn
+                id="gBtn"
+                style="margin: 8px"
+                v-bind:loading="sending"
+                v-bind:disabled="sending"
+              >
+                <img
+                  src="../assets/images/google.png"
+                  referrerpolicy="no-referrer"
+                  width="30px"
+                  style="padding-right: 8px"
+                />
+                {{ $t("Login with Google") }}
+              </v-btn>
+              <v-btn
+                style="margin: 8px"
+                v-bind:loading="sending"
+                v-bind:disabled="sending"
+                @click="sendData()"
+                >{{ $t("Login") }}</v-btn
+              >
+            </v-row>
+            <v-layout v-else>
+              <v-btn
+                id="gBtn"
+                v-bind:loading="sending"
+                v-bind:disabled="sending"
+              >
+                <img
+                  src="../assets/images/google.png"
+                  referrerpolicy="no-referrer"
+                  width="30px"
+                  style="padding-right: 8px"
+                />
+                {{ $t("Login with Google") }}
+              </v-btn>
+              <v-spacer />
+              <v-btn
+                v-bind:loading="sending"
+                v-bind:disabled="sending"
+                @click="sendData()"
+                >{{ $t("Login") }}</v-btn
+              >
+            </v-layout>
+          </v-layout>
+        </v-layout>
+      </v-form>
+
+      <v-form v-if="loginOrSingUp == 'signup'" ref="formRef">
+        <v-layout align-center justify-center style="padding: 4px 24px">
+          <div v-if="$vuetify.breakpoint.width > 960">
+            {{ $t("Name") }}
+          </div>
+          <v-spacer v-if="$vuetify.breakpoint.width > 960" />
+          <v-text-field
+            class="input-width"
+            v-model="name"
+            v-bind:label="$vuetify.breakpoint.width < 960 ? $t('Name') : null"
+            v-bind:rules="[required]"
+            outlined
+            hide-details="auto"
+          />
+        </v-layout>
+        <v-layout align-center justify-center style="padding: 4px 24px">
+          <div v-if="$vuetify.breakpoint.width > 960">
+            {{ $t("E-mail") }}
+          </div>
+          <v-spacer v-if="$vuetify.breakpoint.width > 960" />
+          <v-text-field
+            class="input-width"
+            v-model="email"
+            v-bind:label="$vuetify.breakpoint.width < 960 ? $t('E-mail') : null"
+            v-bind:rules="[required]"
+            outlined
+            hide-details="auto"
+          />
+        </v-layout>
+        <v-layout align-center justify-center style="padding: 4px 24px">
+          <div v-if="$vuetify.breakpoint.width > 960">
+            {{ $t("Password") }}
+          </div>
+          <v-spacer v-if="$vuetify.breakpoint.width > 960" />
+          <v-text-field
+            class="input-width"
+            v-model="password"
+            v-bind:label="$vuetify.breakpoint.width < 960 ? $t('Password') : null"
+            v-bind:append-icon="showPass1 ? 'mdi-eye' : 'mdi-eye-off'"
+            v-bind:type="showPass1 ? 'text' : 'password'"
+            v-bind:rules="[required, minLength]"
+            @click:append="showPass1 = !showPass1"
+            outlined
+            hide-details="auto"
+          />
+        </v-layout>
+        <v-layout align-center justify-center style="padding: 4px 24px">
+          <div v-if="$vuetify.breakpoint.width > 960">
+            {{ $t("Repeat password") }}
+          </div>
+          <v-spacer v-if="$vuetify.breakpoint.width > 960" />
+          <v-text-field
+            class="input-width"
+            v-model="repeatPassword"
+            v-bind:label="$vuetify.breakpoint.width < 960 ? $t('Repeat password') : null"
+            v-bind:append-icon="showPass2 ? 'mdi-eye' : 'mdi-eye-off'"
+            v-bind:type="showPass2 ? 'text' : 'password'"
+            v-bind:rules="[required, minLength, passwordMatch]"
+            @click:append="showPass2 = !showPass2"
+            outlined
+            hide-details="auto"
+          />
+        </v-layout>
+        <v-layout
+          align-center
+          justify-center
+          style="padding: 8px 24px 16px 24px"
+        >
+          <v-layout>
+            <v-row
+              align="center"
+              justify="center"
+              style="padding: 8px 0 0 0"
+              v-if="$vuetify.breakpoint.width < 960"
+            >
+              <v-btn
+                id="gBtn"
+                style="margin: 8px"
+                v-bind:loading="sending"
+                v-bind:disabled="sending"
+              >
+                <img
+                  src="../assets/images/google.png"
+                  referrerpolicy="no-referrer"
+                  width="30px"
+                  style="padding-right: 8px"
+                />
+                {{ $t("Sign up with Google") }}
+              </v-btn>
+              <v-btn
+                style="margin: 8px"
+                v-bind:loading="sending"
+                v-bind:disabled="sending"
+                @click="sendData()"
+                >{{ $t("Sign up") }}</v-btn
+              >
+            </v-row>
+            <v-layout v-else>
+              <v-btn
+                id="gBtn"
+                v-bind:loading="sending"
+                v-bind:disabled="sending"
+              >
+                <img
+                  src="../assets/images/google.png"
+                  referrerpolicy="no-referrer"
+                  width="30px"
+                  style="padding-right: 8px"
+                />
+                {{ $t("Sign up with Google") }}
+              </v-btn>
+              <v-spacer />
+              <v-btn
+                v-bind:loading="sending"
+                v-bind:disabled="sending"
+                @click="sendData()"
+                >{{ $t("Sign up") }}</v-btn
+              >
+            </v-layout>
+          </v-layout>
+        </v-layout>
+      </v-form>
     </v-card>
 
     <alert-dialog
@@ -384,7 +426,9 @@ export default {
     },
 
     loginOrSingUp: function () {
-      this.$refs.formRef.reset();
+      if (this.$refs.formRef != undefined) {
+        this.$refs.formRef.reset();
+      }
       const selfVue = this;
       window.setTimeout(function () {
         window.gapi.auth2
@@ -403,7 +447,9 @@ export default {
 </script>
 
 <style scoped>
-.eight-padding {
-  padding: 8px !important;
+@media only screen and (min-width: 960px) {
+  .input-width {
+    max-width: 300px !important;
+  }
 }
 </style>
