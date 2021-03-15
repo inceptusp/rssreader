@@ -24,7 +24,9 @@
     Examples of Personal Information include full name and email address.
     <br />
     <strong>“Service”</strong> is the RSS Reader application itself.
+    <br />
     <strong>"Visitor"</strong> means any person who visits the service website.
+    <br />
     <strong>"you"</strong> and <strong>"your"</strong> means, depending on the
     context, either a User or a Visitor. <br /><br />
     <h3>2. Privacy for Users</h3>
@@ -232,7 +234,7 @@
     hashed, which means we cannot see a Users’ password. We cannot resend
     forgotten passwords either. We will only provide Users with instructions on
     how to reset them. <br /><br />
-    <h3>C. International Transfers</h3>
+    <h5>C. International Transfers</h5>
     <br />
     <strong>(i)</strong> We operate in Brazil <br /><br />
     Our servers and offices are located in Brazil, so your information may be
