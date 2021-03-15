@@ -52,7 +52,9 @@
         </v-layout>
         <v-layout align-center justify-center style="padding: 4px 24px">
           <v-spacer v-if="$vuetify.breakpoint.width > 960" />
-          <div><a @click="forgotPassword()">{{ $t("Forgot my password") }}</a></div>
+          <div>
+            <a @click="forgotPassword()">{{ $t("Forgot my password") }}</a>
+          </div>
         </v-layout>
         <v-layout
           align-center
@@ -151,7 +153,9 @@
           <v-text-field
             class="input-width"
             v-model="password"
-            v-bind:label="$vuetify.breakpoint.width < 960 ? $t('Password') : null"
+            v-bind:label="
+              $vuetify.breakpoint.width < 960 ? $t('Password') : null
+            "
             v-bind:append-icon="showPass1 ? 'mdi-eye' : 'mdi-eye-off'"
             v-bind:type="showPass1 ? 'text' : 'password'"
             v-bind:rules="[required, minLength]"
@@ -168,7 +172,9 @@
           <v-text-field
             class="input-width"
             v-model="repeatPassword"
-            v-bind:label="$vuetify.breakpoint.width < 960 ? $t('Repeat password') : null"
+            v-bind:label="
+              $vuetify.breakpoint.width < 960 ? $t('Repeat password') : null
+            "
             v-bind:append-icon="showPass2 ? 'mdi-eye' : 'mdi-eye-off'"
             v-bind:type="showPass2 ? 'text' : 'password'"
             v-bind:rules="[required, minLength, passwordMatch]"
@@ -284,7 +290,9 @@ export default {
     },
 
     minLength() {
-      return (value) => (value != null) && (value.length >= 6) || this.$t("The password is to short");
+      return (value) =>
+        (value != null && value.length >= 6) ||
+        this.$t("The password is to short");
     },
   },
 
@@ -314,7 +322,9 @@ export default {
 
     forgotPassword() {
       this.errorTitle = this.$t("A recovery email has been sent");
-      this.errorContent = this.$t("We have sent a password recovery email to your inbox. Check it (or the spam folder) for more instructions.");
+      this.errorContent = this.$t(
+        "We have sent a password recovery email to your inbox. Check it (or the spam folder) for more instructions."
+      );
       this.showErrorDialog();
     },
 
@@ -381,37 +391,12 @@ export default {
                 selfVue.sending = false;
             }
           } else {
-            if (user == undefined) {
-              if (selfVue.loginOrSingUp == "login") {
-                window.localStorage.setItem("user", response.name);
-                window.localStorage.setItem("pic", response.imageUrl);
-              } else {
-                window.localStorage.setItem("user", selfVue.name);
-                window.localStorage.setItem("pic", "");
-              }
-              window.localStorage.setItem("email", selfVue.email);
-              window.localStorage.setItem("login", "server");
-            } else {
-              window.localStorage.setItem(
-                "user",
-                user.getBasicProfile().getName()
-              );
-              window.localStorage.setItem(
-                "email",
-                user.getBasicProfile().getEmail()
-              );
-              if (selfVue.loginOrSingUp == "login") {
-                window.localStorage.setItem("pic", response.imageUrl);
-              } else {
-                window.localStorage.setItem(
-                  "pic",
-                  user.getBasicProfile().getImageUrl()
-                );
-              }
-              window.localStorage.setItem("login", "provider");
-            }
+            window.localStorage.setItem("user", response.name);
+            window.localStorage.setItem("pic", response.pic);
+            window.localStorage.setItem("email", response.email);
+            window.localStorage.setItem("login", response.login);
             window.localStorage.setItem("uuid", response.uuid);
-            window.localStorage.setItem("feeds", 0 /*response.feeds*/);
+            window.localStorage.setItem("feeds", response.feeds);
             selfVue.dialog = false;
             document.location.reload();
           }
