@@ -59,6 +59,7 @@ const messages = {
        "Add a new feed":"Adicionar novo feed",
        "Feed link":"Link do feed",
        "Categories":"Categorias",
+       "Press ENTER to add a category":"Aperte ENTER para adicionar categorias",
        "Order feeds list":"Ordenar lista de feeds",
        "Alphabetically":"Alfabeticamente",
        "Added date":"Ordem de adição",

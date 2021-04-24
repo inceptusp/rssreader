@@ -47,11 +47,15 @@
             multiple
             small-chips
             deletable-chips
+            persistent-hint
           />
+        </v-layout>
+        <v-layout align-center justify-center style="padding: 4px 24px">
+          <div>{{ $t('Press ENTER to add a category') }}</div>
         </v-layout>
       </v-form>
 
-      <v-card-actions>
+      <v-card-actions v-if="!sending">
         <v-spacer></v-spacer>
         <v-btn color="#00bfa5" text v-on:click="dialog = false">{{
           $t("Cancel")
@@ -60,13 +64,31 @@
           $t("Save")
         }}</v-btn>
       </v-card-actions>
+      <v-card-actions v-else>
+        <v-spacer></v-spacer>
+        <v-progress-circular indeterminate color="#00bfa5" />
+      </v-card-actions>
     </v-card>
+
+    <alert-dialog
+      v-model="errorDialog"
+      v-bind:title="errorTitle"
+      v-bind:content="errorContent"
+    />
   </v-dialog>
 </template>
 
 <script>
+import AlertDialog from "../components/AlertDialog";
+import websocketHelper from "../websocketHelper";
+import { errorMessages } from "../errorMessages";
+
 export default {
   name: "NewFeedDialog",
+
+  components: {
+    AlertDialog,
+  },
 
   props: {
     value: { type: Boolean },
@@ -87,12 +109,48 @@ export default {
     name: null,
     link: null,
     categories: null,
+    sending: false,
+    errorDialog: false,
+    errorTitle: null,
+    errorContent: null,
   }),
 
   methods: {
+    showErrorDialog() {
+      this.errorDialog = !this.errorDialog;
+    },
+
     addFeed() {
+      const selfVue = this;
+      
       if (this.$refs.formRef.validate()) {
-        this.dialog = false;
+        var obj = new Object();
+        obj.feedName = selfVue.name;
+        obj.feedAddress = selfVue.link;
+        obj.feedCategories = selfVue.categories;
+        obj.variable = window.localStorage.getItem("l");
+        obj.uuid = window.localStorage.getItem("sid");
+        
+        var jsonString = JSON.stringify(obj);
+
+        var connection = websocketHelper.rssReaderWs();
+        connection.onerror = (error) => websocketHelper.onError(error, selfVue);
+        connection.onopen = function () {
+          selfVue.sending = true;
+          var byte = new Uint8Array(1);
+          byte[0] = 0x04;
+          connection.send("301 ");
+          connection.send(jsonString);
+          connection.send(byte);
+        };
+        connection.onmessage = function (msg) {
+          var response = JSON.parse(msg.data);
+          if (Object.prototype.hasOwnProperty.call(response, "error")) {
+            errorMessages(response.error, selfVue);
+          } else {
+            selfVue.dialog = false;
+          }
+        }
       }
     },
   },
