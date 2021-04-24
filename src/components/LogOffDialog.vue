@@ -28,6 +28,7 @@
 
 <script>
 import AlertDialog from "../components/AlertDialog";
+import websocketHelper from "../websocketHelper";
 
 export default {
   name: "AlertDialog",
@@ -56,23 +57,12 @@ export default {
       var selfVue = this;
 
       var obj = new Object();
-      obj.email = window.localStorage.getItem("email");
+      obj.variable = window.localStorage.getItem("l");
       obj.uuid = window.localStorage.getItem("sid");
       var jsonString = JSON.stringify(obj);
 
-      var connection = new WebSocket(
-        "wss://rssreader.aplikoj.com/wss/",
-        "PDRAUM"
-      );
-      connection.onerror = function (error) {
-        selfVue.errorTitle = "Comunication error";
-        selfVue.errorContent =
-          '<p>There was a communication error with the server and/or the internet. Check your connection or try again later.</p><p style="opacity: 0.8">Error code: ' +
-          "websocket_" +
-          error.type +
-          "</p>";
-        selfVue.showErrorDialog();
-      };
+      var connection = websocketHelper.rssReaderWs();
+        connection.onerror = (error) => websocketHelper.onError(error, selfVue);
       connection.onopen = function () {
         var byte = new Uint8Array(1);
         byte[0] = 0x04;
@@ -82,7 +72,7 @@ export default {
       };
       connection.onclose = function () {
         window.localStorage.removeItem("user");
-        window.localStorage.removeItem("email");
+        window.localStorage.removeItem("l");
         window.localStorage.removeItem("pic");
         window.localStorage.removeItem("login");
         window.localStorage.removeItem("sid");

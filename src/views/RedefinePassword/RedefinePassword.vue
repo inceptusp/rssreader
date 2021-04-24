@@ -67,6 +67,7 @@
 
 <script>
 import AlertDialog from "../../components/AlertDialog.vue";
+import websocketHelper from "../../websocketHelper";
 
 export default {
   name: "RedefinePassword",
@@ -130,20 +131,8 @@ export default {
         obj.password = password;
         var jsonString = JSON.stringify(obj);
 
-        var connection = new WebSocket(
-          "wss://rssreader.aplikoj.com/wss/",
-          "PDRAUM"
-        );
-        connection.onerror = function (error) {
-          selfVue.alertTitle = "Erro de comunicação";
-          selfVue.alertContent =
-            '<p>Houve um erro de comunicação com o servidor e/ou com a internet. Verifique sua conexão ou tente novamente mais tarde.</p><p style="opacity: 0.8">Código de erro: ' +
-            "websocket_" +
-            error.type +
-            "</p>";
-          selfVue.showAlertDialog();
-          selfVue.sending = false;
-        };
+        var connection = websocketHelper.rssReaderWs();
+        connection.onerror = (error) => websocketHelper.onError(error, selfVue);
         connection.onopen = function () {
           selfVue.sending = true;
           var byte = new Uint8Array(1);

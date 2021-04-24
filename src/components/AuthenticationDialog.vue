@@ -4,19 +4,19 @@
       <v-layout align-center justify-center style="padding: 8px">
         <v-btn
           text
-          @click="loginOrSingUp = 'login'"
+          @click="loginOrSignUp = 'login'"
           v-bind:color="loginOptionColor"
           >{{ $t("Login") }}</v-btn
         >
         <v-btn
           text
-          @click="loginOrSingUp = 'signup'"
+          @click="loginOrSignUp = 'signup'"
           v-bind:color="signupOptionColor"
           >{{ $t("Sign up") }}</v-btn
         >
       </v-layout>
 
-      <v-form v-if="loginOrSingUp == 'login'" ref="formRef">
+      <v-form v-if="loginOrSignUp == 'login'" ref="formRef">
         <v-layout align-center justify-center style="padding: 4px 24px">
           <div v-if="$vuetify.breakpoint.width > 960">
             {{ $t("Email") }}
@@ -86,7 +86,7 @@
                 style="margin: 8px"
                 v-bind:loading="sending"
                 v-bind:disabled="sending"
-                @click="sendData()"
+                @click="loginSignUp()"
                 >{{ $t("Login") }}</v-btn
               >
             </v-row>
@@ -108,7 +108,7 @@
               <v-btn
                 v-bind:loading="sending"
                 v-bind:disabled="sending"
-                @click="sendData()"
+                @click="loginSignUp()"
                 >{{ $t("Login") }}</v-btn
               >
             </v-layout>
@@ -116,7 +116,7 @@
         </v-layout>
       </v-form>
 
-      <v-form v-if="loginOrSingUp == 'signup'" ref="formRef">
+      <v-form v-if="loginOrSignUp == 'signup'" ref="formRef">
         <v-layout align-center justify-center style="padding: 4px 24px">
           <div v-if="$vuetify.breakpoint.width > 960">
             {{ $t("Name") }}
@@ -213,7 +213,7 @@
                 style="margin: 8px"
                 v-bind:loading="sending"
                 v-bind:disabled="sending"
-                @click="sendData()"
+                @click="loginSignUp()"
                 >{{ $t("Sign up") }}</v-btn
               >
             </v-row>
@@ -235,7 +235,7 @@
               <v-btn
                 v-bind:loading="sending"
                 v-bind:disabled="sending"
-                @click="sendData()"
+                @click="loginSignUp()"
                 >{{ $t("Sign up") }}</v-btn
               >
             </v-layout>
@@ -254,6 +254,7 @@
 
 <script>
 import AlertDialog from "../components/AlertDialog";
+import websocketHelper from "../websocketHelper";
 
 export default {
   name: "AuthenticationDialog",
@@ -272,11 +273,11 @@ export default {
 
   computed: {
     loginOptionColor() {
-      return this.loginOrSingUp == "login" ? "#00bfa5" : "black";
+      return this.loginOrSignUp == "login" ? "#00bfa5" : "black";
     },
 
     signupOptionColor() {
-      return this.loginOrSingUp == "signup" ? "#00bfa5" : "black";
+      return this.loginOrSignUp == "signup" ? "#00bfa5" : "black";
     },
 
     passwordMatch() {
@@ -298,7 +299,7 @@ export default {
 
   data: () => ({
     dialog: false,
-    loginOrSingUp: null,
+    loginOrSignUp: null,
     email: null,
     password: null,
     name: null,
@@ -328,12 +329,12 @@ export default {
       this.showErrorDialog();
     },
 
-    sendData(user) {
+    loginSignUp(user) {
       if (this.$refs.formRef.validate() || user != undefined) {
         const selfVue = this;
 
         var obj = new Object();
-        if (selfVue.loginOrSingUp == "login") {
+        if (selfVue.loginOrSignUp == "login") {
           if (user == undefined) {
             obj.email = selfVue.email;
             obj.password = selfVue.password;
@@ -350,26 +351,14 @@ export default {
           }
         }
         var jsonString = JSON.stringify(obj);
-
-        var connection = new WebSocket(
-          "wss://rssreader.aplikoj.com/wss/",
-          "PDRAUM"
-        );
-        connection.onerror = function (error) {
-          selfVue.errorTitle = "Comunication error";
-          selfVue.errorContent =
-            '<p>There was a communication error with the server and/or the internet. Check your connection or try again later.</p><p style="opacity: 0.8">Error code: ' +
-            "websocket_" +
-            error.type +
-            "</p>";
-          selfVue.showErrorDialog();
-          selfVue.sending = false;
-        };
+        
+        var connection = websocketHelper.rssReaderWs();
+        connection.onerror = (error) => websocketHelper.onError(error, selfVue);
         connection.onopen = function () {
           selfVue.sending = true;
           var byte = new Uint8Array(1);
           byte[0] = 0x04;
-          if (selfVue.loginOrSingUp == "login") {
+          if (selfVue.loginOrSignUp == "login") {
             connection.send("101 ");
           } else {
             connection.send("100 ");
@@ -391,9 +380,10 @@ export default {
                 selfVue.sending = false;
             }
           } else {
+            console.log(response);
             window.localStorage.setItem("user", response.name);
             window.localStorage.setItem("pic", response.pic);
-            window.localStorage.setItem("email", response.email);
+            window.localStorage.setItem("l", response.variable);
             window.localStorage.setItem("login", response.login);
             window.localStorage.setItem("sid", response.uuid);
             window.localStorage.setItem("feeds", response.feeds);
@@ -408,8 +398,8 @@ export default {
   watch: {
     value: function () {
       this.dialog = this.value;
-      if (this.loginOrSingUp == null) {
-        this.loginOrSingUp = "login";
+      if (this.loginOrSignUp == null) {
+        this.loginOrSignUp = "login";
       }
     },
 
@@ -420,7 +410,7 @@ export default {
       this.$emit("input", this.dialog);
     },
 
-    loginOrSingUp: function () {
+    loginOrSignUp: function () {
       if (this.$refs.formRef != undefined) {
         this.$refs.formRef.reset();
       }

@@ -196,7 +196,6 @@ export default {
       this.logged = true;
       this.userPhoto = window.localStorage.getItem("pic");
       this.userName = window.localStorage.getItem("user");
-      this.email = window.localStorage.getItem("email");
     }
   },
 
