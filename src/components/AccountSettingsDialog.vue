@@ -192,7 +192,7 @@ export default {
 
   mounted: function () {
     this.dialog = this.value;
-    if (window.localStorage.getItem("uuid") != null) {
+    if (window.localStorage.getItem("sid") != null) {
       this.logged = true;
       this.userPhoto = window.localStorage.getItem("pic");
       this.userName = window.localStorage.getItem("user");

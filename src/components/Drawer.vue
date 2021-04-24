@@ -140,7 +140,7 @@ export default {
 
   mounted: function () {
     this.drawer = this.value;
-    if (window.localStorage.getItem("uuid") != null) {
+    if (window.localStorage.getItem("sid") != null) {
       this.logged = true;
       this.userName = window.localStorage.getItem("user");
       this.userPhoto = window.localStorage.getItem("pic");

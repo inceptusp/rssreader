@@ -57,7 +57,7 @@ export default {
 
       var obj = new Object();
       obj.email = window.localStorage.getItem("email");
-      obj.uuid = window.localStorage.getItem("uuid");
+      obj.uuid = window.localStorage.getItem("sid");
       var jsonString = JSON.stringify(obj);
 
       var connection = new WebSocket(
@@ -85,7 +85,7 @@ export default {
         window.localStorage.removeItem("email");
         window.localStorage.removeItem("pic");
         window.localStorage.removeItem("login");
-        window.localStorage.removeItem("uuid");
+        window.localStorage.removeItem("sid");
         window.localStorage.removeItem("feeds");
         window.localStorage.removeItem("settings");
         if (window.gapi.auth2.getAuthInstance().isSignedIn) {

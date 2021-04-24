@@ -395,7 +395,7 @@ export default {
             window.localStorage.setItem("pic", response.pic);
             window.localStorage.setItem("email", response.email);
             window.localStorage.setItem("login", response.login);
-            window.localStorage.setItem("uuid", response.uuid);
+            window.localStorage.setItem("sid", response.uuid);
             window.localStorage.setItem("feeds", response.feeds);
             selfVue.dialog = false;
             document.location.reload();

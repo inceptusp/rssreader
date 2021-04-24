@@ -33,7 +33,7 @@ export default {
     });
     window.setTimeout(function () {
       if (
-        window.localStorage.getItem("uuid") == null &&
+        window.localStorage.getItem("sid") == null &&
         window.gapi.auth2.getAuthInstance().isSignedIn.get()
       ) {
         window.gapi.auth2.getAuthInstance().signOut();
@@ -41,7 +41,7 @@ export default {
     }, 1000);
     window.addEventListener("online", function () {
       if (
-        window.localStorage.getItem("uuid") == null &&
+        window.localStorage.getItem("sid") == null &&
         window.gapi.auth2.getAuthInstance().isSignedIn.get()
       ) {
         window.setTimeout(function () {
