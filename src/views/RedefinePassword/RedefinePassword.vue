@@ -67,6 +67,7 @@
 
 <script>
 import AlertDialog from "../../components/AlertDialog.vue";
+import { errorMessages } from '../../errorMessages';
 import websocketHelper from "../../websocketHelper";
 
 export default {
@@ -144,41 +145,7 @@ export default {
         connection.onmessage = function (msg) {
           var response = JSON.parse(msg.data);
           if (Object.prototype.hasOwnProperty.call(response, "error")) {
-            switch (response.error) {
-              case "json_with_error":
-                selfVue.alertTitle = "Erro de transmissão";
-                selfVue.alertContent =
-                  '<p>Houve um erro na transmissão, verifique o link que você recebeu e tente novamente.</p><p style="opacity: 0.8">Código de erro: ' +
-                  response.error +
-                  "</p>";
-                selfVue.showAlertDialog();
-                break;
-              case "user_not_found":
-                selfVue.alertTitle = "Usuário não encontrado";
-                selfVue.alertContent =
-                  '<p>Este usuário não foi encontrado em nosso sistema Verifique o link que você recebeu e tente novamente.</p><p style="opacity: 0.8">Código de erro: ' +
-                  response.error +
-                  "</p>";
-                selfVue.showAlertDialog();
-                break;
-              case "exception_empty_authid" || "wrong_authid":
-                selfVue.alertTitle = "Erro com a chave de verificação";
-                selfVue.alertContent =
-                  '<p>Houve um erro ao confirmar a chave de verificação, verifique o link que você recebeu e tente novamente.</p><p style="opacity: 0.8">Código de erro: ' +
-                  response.error +
-                  "</p>";
-                selfVue.showAlertDialog();
-                break;
-              default:
-                selfVue.alertTitle = "Erro desconhecido";
-                selfVue.alertContent =
-                  '<p>Ops! Você acabou de esbarrar em um erro que ainda não conhecemos, por favor, entre em contato conosco informando o código de erro abaixo para que possamos corrigí-lo.</p><p style="opacity: 0.8">Código de erro: ' +
-                  response.error +
-                  "</p>";
-                selfVue.showAlertDialog();
-                break;
-            }
-            selfVue.sending = false;
+            errorMessages(response.error, selfVue);
           } else {
             selfVue.$router.push("/redefinePassword/success");
           }
