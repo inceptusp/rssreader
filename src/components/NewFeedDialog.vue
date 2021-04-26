@@ -51,7 +51,7 @@
           />
         </v-layout>
         <v-layout align-center justify-center style="padding: 4px 24px">
-          <div>{{ $t('Press ENTER to add a category') }}</div>
+          <div style="text-align: center;">{{ $t('Press ENTER to add a category') }}</div>
         </v-layout>
       </v-form>
 
@@ -149,6 +149,7 @@ export default {
             errorMessages(response.error, selfVue);
           } else {
             selfVue.dialog = false;
+            selfVue.sending = false;
           }
         }
       }
