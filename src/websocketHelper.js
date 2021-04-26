@@ -13,7 +13,6 @@ function onError(error, selfVue) {
     error.type +
     "</p>";
     selfVue.showErrorDialog();
-    selfVue.sending = false;
 }
 
 export default {rssReaderWs, onError};

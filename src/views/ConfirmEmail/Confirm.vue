@@ -56,7 +56,10 @@ export default {
       var jsonString = JSON.stringify(obj);
 
       var connection = websocketHelper.rssReaderWs();
-      connection.onerror = (error) => websocketHelper.onError(error, selfVue);
+      connection.onerror = function (error) {
+        websocketHelper.onError(error, selfVue);
+        selfVue.sending = false;
+      }
       connection.onopen = function() {
         selfVue.sending = true;
         var byte = new Uint8Array(1);
