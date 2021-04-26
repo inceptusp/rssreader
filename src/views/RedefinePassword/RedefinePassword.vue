@@ -57,11 +57,11 @@
         </div>
       </v-btn>
     </v-fab-transition>
-    <alertdialog
-      v-bind:title="alertTitle"
-      v-bind:content="alertContent"
+    <alert-dialog
+      v-bind:title="errorTitle"
+      v-bind:content="errorContent"
       v-bind:show="showAlert"
-    ></alertdialog>
+    ></alert-dialog>
   </div>
 </template>
 
@@ -74,7 +74,7 @@ export default {
   name: "RedefinePassword",
 
   components: {
-    alertdialog: AlertDialog,
+    AlertDialog,
   },
 
   mounted: function () {
@@ -109,8 +109,8 @@ export default {
     repeatNewPassword: null,
     sending: false,
     showAlert: false,
-    alertTitle: null,
-    alertContent: null,
+    errorTitle: null,
+    errorContent: null,
   }),
 
   methods: {

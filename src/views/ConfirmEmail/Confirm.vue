@@ -4,11 +4,11 @@
       <v-progress-circular indeterminate size="48" color="#00bfa5" />
       <p style="padding: 8px;">{{ $t("Confirming your email address...") }}</p>
     </div>
-    <alertdialog
-      v-bind:title="alertTitle"
-      v-bind:content="alertContent"
+    <alert-dialog
+      v-bind:title="errorTitle"
+      v-bind:content="errorContent"
       v-bind:show="showAlert"
-    ></alertdialog>
+    ></alert-dialog>
   </div>
 </template>
 
@@ -21,7 +21,7 @@ export default {
   name: "Confirm",
 
   components: {
-    alertdialog: AlertDialog
+    AlertDialog
   },
 
   mounted: function() {
@@ -35,8 +35,8 @@ export default {
   data: () => ({
     sending: false,
     showAlert: false,
-    alertTitle: null,
-    alertContent: null,
+    errorTitle: null,
+    errorContent: null,
   }),
 
   methods: {
