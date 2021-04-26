@@ -11,7 +11,7 @@
           <v-spacer v-if="$vuetify.breakpoint.width > 960" />
           <v-hover v-slot="{ hover }">
             <v-list-item-avatar color="grey" size="78">
-              <v-icon color="white" v-if="userPhoto == null"
+              <v-icon color="white" v-if="userPhoto == null || userPhoto == ''"
                 >mdi-account</v-icon
               >
               <v-img v-else>
