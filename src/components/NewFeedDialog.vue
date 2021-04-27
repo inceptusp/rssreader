@@ -108,7 +108,7 @@ export default {
     dialog: false,
     name: null,
     link: null,
-    categories: null,
+    categories: [],
     sending: false,
     errorDialog: false,
     errorTitle: null,
