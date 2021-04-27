@@ -29,6 +29,8 @@
 </template>
 
 <script>
+import * as idb from 'idb';
+
 import AlertDialog from "../components/AlertDialog";
 import websocketHelper from "../websocketHelper";
 import { errorMessages } from "../errorMessages";
@@ -42,7 +44,7 @@ export default {
 
   props: {
     value: { type: Boolean },
-    feedAddress: { type: String },
+    link: { type: String },
   },
 
   mounted: function () {
@@ -62,11 +64,13 @@ export default {
       this.errorDialog = !this.errorDialog;
     },
 
-    removeFeed() {
+    removeFeed: async function() {
       const selfVue = this;
+
+      var dbInstance = await idb.openDB('rssReader', 1);
       
       var obj = new Object();
-      obj.feedAddress = selfVue.feedAddress;
+      obj.feedAddress = selfVue.link;
       obj.variable = window.localStorage.getItem("l");
       obj.uuid = window.localStorage.getItem("sid");
     
@@ -90,6 +94,8 @@ export default {
         if (Object.prototype.hasOwnProperty.call(response, "error")) {
           errorMessages(response.error, selfVue);
         } else {
+          var feeds = dbInstance.transaction('feeds', 'readwrite').objectStore('feeds');
+          feeds.delete(selfVue.link);
           selfVue.dialog = false;
           selfVue.sending = false;
         }
