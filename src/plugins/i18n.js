@@ -70,6 +70,7 @@ const messages = {
        "Added date":"Ordem de adição",
        "Dark mode":"Modo escuro",
        "Reset":"Redefinir",
+       "It seems that you don't have internet connection or our server is offline, please check your connection or try again later":"Parece que você não tem conexão com a internet ou nosso servidor está offline, por favor verifique usa conexão ou tente novamente mais tarde",
     }
 }
 
