@@ -153,6 +153,7 @@ export default {
           } else {
             selfVue.dialog = false;
             selfVue.sending = false;
+            selfVue.$emit("feedListUpdate");
           }
         }
       }

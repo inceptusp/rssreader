@@ -170,6 +170,7 @@ export default {
             feeds.put(obj);
             selfVue.dialog = false;
             selfVue.sending = false;
+            selfVue.$emit("feedListUpdate");
           }
         }
       }
