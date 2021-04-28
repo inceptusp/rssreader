@@ -141,7 +141,7 @@ export default {
           selfVue.sending = true;
           var byte = new Uint8Array(1);
           byte[0] = 0x04;
-          connection.send("105 ");
+          connection.send("103 ");
           connection.send(jsonString);
           connection.send(byte);
         };
