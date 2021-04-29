@@ -91,6 +91,7 @@ export default {
     saveSettings() {
       this.$vuetify.theme.dark = this.settings.darkMode;
       window.localStorage.setItem("settings", JSON.stringify(this.settings));
+      this.$emit("feedListUpdate");
       this.dialog = false;
     },
   },
