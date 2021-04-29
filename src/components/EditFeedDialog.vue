@@ -80,7 +80,7 @@
 </template>
 
 <script>
-import * as idb from 'idb';
+import Dexie from 'dexie';
 
 import AlertDialog from "../components/AlertDialog";
 import websocketHelper from "../websocketHelper";
@@ -134,7 +134,11 @@ export default {
     editFeed: async function() {
       const selfVue = this;
       
-      var dbInstance = await idb.openDB('rssReader', 1);
+      var db = new Dexie('rssReader');
+      db.version(1).stores({
+        feeds: "feedAddress,feedName,*feedCategories",
+      });
+      await db.open();
 
       if (this.$refs.formRef.validate()) {
         var obj = new Object();
@@ -166,8 +170,7 @@ export default {
           } else {
             delete obj.variable;
             delete obj.uuid;
-            var feeds = dbInstance.transaction('feeds', 'readwrite').objectStore('feeds');
-            feeds.put(obj);
+            db.feeds.put(obj);
             selfVue.dialog = false;
             selfVue.sending = false;
             selfVue.$emit("feedListUpdate");

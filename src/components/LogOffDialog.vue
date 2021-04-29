@@ -27,6 +27,8 @@
 </template>
 
 <script>
+import Dexie from 'dexie';
+
 import AlertDialog from "../components/AlertDialog";
 import websocketHelper from "../websocketHelper";
 
@@ -69,7 +71,7 @@ export default {
       connection.onopen = function () {
         var byte = new Uint8Array(1);
         byte[0] = 0x04;
-        connection.send("105 ");
+        connection.send("106 ");
         connection.send(jsonString);
         connection.send(byte);
       };
@@ -84,6 +86,7 @@ export default {
         if (window.gapi.auth2.getAuthInstance().isSignedIn) {
           window.gapi.auth2.getAuthInstance().signOut();
         }
+        Dexie.delete('rssReader');
         this.dialog = false;
         document.location.replace(window.location.origin);
       };

@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import * as idb from 'idb';
+import Dexie from 'dexie';
 
 import AlertDialog from "../components/AlertDialog";
 import websocketHelper from "../websocketHelper";
@@ -67,7 +67,11 @@ export default {
     removeFeed: async function() {
       const selfVue = this;
 
-      var dbInstance = await idb.openDB('rssReader', 1);
+      var db = new Dexie('rssReader');
+      db.version(1).stores({
+        feeds: "feedAddress,feedName,*feedCategories",
+      });
+      await db.open();
       
       var obj = new Object();
       obj.feedAddress = selfVue.link;
@@ -94,8 +98,7 @@ export default {
         if (Object.prototype.hasOwnProperty.call(response, "error")) {
           errorMessages(response.error, selfVue);
         } else {
-          var feeds = dbInstance.transaction('feeds', 'readwrite').objectStore('feeds');
-          feeds.delete(selfVue.link);
+          db.feeds.delete(selfVue.link);
           selfVue.dialog = false;
           selfVue.sending = false;
           selfVue.$emit("feedListUpdate");
