@@ -425,7 +425,7 @@ export default {
             document.getElementById("gBtn"),
             {},
             function (user) {
-              selfVue.sendData(user);
+              selfVue.loginSignUp(user);
             }
           );
       }, 500);
