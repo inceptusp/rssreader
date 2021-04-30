@@ -182,8 +182,8 @@ export default {
             delete obj.uuid;
             db.feeds.put(obj);
             this.dialog = false;
-            this.$emit("feedListUpdate");
             this.loading = false;
+            this.$emit("feedListUpdate");
           }
         }
       }
