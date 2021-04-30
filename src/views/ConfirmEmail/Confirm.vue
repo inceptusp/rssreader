@@ -59,7 +59,7 @@ export default {
         websocketHelper.wssProtocol
       );
       connection.onopen = () => {
-        this.sending = true;
+        this.loading = true;
         connection.send("102 " + jsonString + "\u0004");
       };
       connection.onerror = (error) => {
