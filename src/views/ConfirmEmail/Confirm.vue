@@ -76,6 +76,7 @@ export default {
           this.loading = false;
           window.location.replace(window.origin);
         } else {
+          window.localStorage.setItem("verified", response.verified);
           this.$router.push("/confirmEmail/success");
         }
       };
