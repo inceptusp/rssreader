@@ -1,81 +1,90 @@
 <template>
-  <v-dialog v-model="dialog" max-width="600" v-bind:key="feedAddress">
+  <v-dialog v-model="dialog" v-bind:key="feedAddress" max-width="600">
     <v-card>
+
       <v-card-title>{{ $t("Edit a feed") }}</v-card-title>
 
+      <!-- Edit feed form -->
       <v-form ref="formRef">
-        <v-layout align-center justify-center style="padding: 4px 24px">
+
+        <!-- Feed name input field -->
+        <v-layout align-center justify-center style="padding: 4px 24px;">
           <div v-if="$vuetify.breakpoint.width > 960">
             {{ $t("Name") }}
           </div>
           <v-spacer v-if="$vuetify.breakpoint.width > 960" />
           <v-text-field
-            class="input-width"
             v-model="feedName"
             v-bind:label="$vuetify.breakpoint.width < 960 ? $t('Name') : null"
             v-bind:rules="[required]"
-            outlined
+            class="input-width"
             hide-details="auto"
+            outlined
           />
         </v-layout>
-        <v-layout align-center justify-center style="padding: 4px 24px">
+
+        <!-- Feed link input field -->
+        <v-layout align-center justify-center style="padding: 4px 24px;">
           <div v-if="$vuetify.breakpoint.width > 960">
             {{ $t("Feed link") }}
           </div>
           <v-spacer v-if="$vuetify.breakpoint.width > 960" />
           <v-text-field
-            class="input-width"
             v-model="feedAddress"
             v-bind:label="$vuetify.breakpoint.width < 960 ? $t('Feed link') : null"
             v-bind:rules="[required]"
-            outlined
+            class="input-width"
             hide-details="auto"
+            outlined
             disabled
           />
         </v-layout>
-        <v-layout align-center justify-center style="padding: 4px 24px">
+
+        <!-- Feed categories input field -->
+        <v-layout align-center justify-center style="padding: 4px 24px;">
           <div v-if="$vuetify.breakpoint.width > 960">
             {{ $t("Categories") }}
           </div>
           <v-spacer v-if="$vuetify.breakpoint.width > 960" />
           <v-combobox
-            class="input-width"
             v-model="feedCategories"
             v-bind:label="$vuetify.breakpoint.width < 960 ? $t('Categories') : null"
+            class="input-width"
             append-icon=""
             hide-details="auto"
             outlined
             multiple
             small-chips
             deletable-chips
-            persistent-hint
           />
         </v-layout>
+
+        <!-- Instruction on how to use the categories input field -->
         <v-layout align-center justify-center style="padding: 4px 24px">
           <div style="text-align: center;">{{ $t('Press ENTER to add a category') }}</div>
         </v-layout>
       </v-form>
 
-      <v-card-actions v-if="!sending">
+      <v-card-actions v-if="!loading">
         <v-spacer></v-spacer>
-        <v-btn color="#00bfa5" text v-on:click="dialog = false">{{
-          $t("Cancel")
-        }}</v-btn
-        ><v-btn color="#00bfa5" text v-on:click="editFeed()">{{
-          $t("Save")
-        }}</v-btn>
+        <v-btn color="#00bfa5" @click="dialog = false" text>
+          {{ $t("Cancel") }}
+        </v-btn>
+        <v-btn color="#00bfa5" @click="editFeed()" text>
+          {{ $t("Save") }}
+        </v-btn>
       </v-card-actions>
       <v-card-actions v-else>
         <v-spacer></v-spacer>
-        <v-progress-circular indeterminate color="#00bfa5" />
+        <v-progress-circular color="#00bfa5" indeterminate />
       </v-card-actions>
-    </v-card>
 
-    <alert-dialog
-      v-model="errorDialog"
-      v-bind:title="errorTitle"
-      v-bind:content="errorContent"
-    />
+      <alert-dialog
+        v-model="errorDialog"
+        v-bind:title="errorTitle"
+        v-bind:content="errorContent"
+      />
+    </v-card>
   </v-dialog>
 </template>
 
@@ -120,7 +129,7 @@ export default {
     feedName: null,
     feedAddress: null,
     feedCategories: null,
-    sending: false,
+    loading: false,
     errorDialog: false,
     errorTitle: null,
     errorContent: null,
@@ -132,48 +141,49 @@ export default {
     },
 
     editFeed: async function() {
-      const selfVue = this;
-      
-      var db = new Dexie('rssReader');
-      db.version(1).stores({
-        feeds: "feedAddress,feedName,*feedCategories",
-      });
-      await db.open();
-
       if (this.$refs.formRef.validate()) {
+        var db = new Dexie('rssReader');
+        db.version(1).stores({
+          feeds: "feedAddress,feedName,*feedCategories",
+        });
+        await db.open();
+
         var obj = new Object();
-        obj.feedName = selfVue.feedName;
-        obj.feedAddress = selfVue.feedAddress;
-        obj.feedCategories = selfVue.feedCategories;
+        obj.feedName = this.feedName;
+        obj.feedAddress = this.feedAddress;
+        obj.feedCategories = this.feedCategories;
         obj.variable = window.localStorage.getItem("l");
         obj.uuid = window.localStorage.getItem("sid");
-        
         var jsonString = JSON.stringify(obj);
 
-        var connection = websocketHelper.rssReaderWs();
-        connection.onerror = function (error) {
-          websocketHelper.onError(error, selfVue);
-          selfVue.sending = false;
-        }
-        connection.onopen = function () {
-          selfVue.sending = true;
-          var byte = new Uint8Array(1);
-          byte[0] = 0x04;
-          connection.send("303 ");
-          connection.send(jsonString);
-          connection.send(byte);
+        var message = "";
+        var connection = new WebSocket(
+          websocketHelper.wssUrl,
+          websocketHelper.wssProtocol
+        );
+        connection.onopen = () => {
+          this.loading = true;
+          connection.send("303 " + jsonString + "\u0004");
         };
-        connection.onmessage = function (msg) {
-          var response = JSON.parse(msg.data);
+        connection.onerror = (error) => {
+          websocketHelper.onError(error, this);
+          this.loading = false;
+        };
+        connection.onmessage = (msg) => {
+          message += msg.data;
+        };
+        connection.onclose = () => {
+          var response = JSON.parse(message);
           if (Object.prototype.hasOwnProperty.call(response, "error")) {
-            errorMessages(response.error, selfVue);
+            errorMessages(response.error, this);
+            this.loading = false;
           } else {
             delete obj.variable;
             delete obj.uuid;
             db.feeds.put(obj);
-            selfVue.dialog = false;
-            selfVue.sending = false;
-            selfVue.$emit("feedListUpdate");
+            this.loading = false;
+            this.dialog = false;
+            this.$emit("feedListUpdate");
           }
         }
       }

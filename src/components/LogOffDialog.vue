@@ -1,28 +1,29 @@
 <template>
   <v-dialog v-model="dialog" max-width="320px">
     <v-card>
+
       <v-card-title class="headline">{{ $t("Are you sure?") }}</v-card-title>
 
-      <v-card-text>{{
-        $t("Are you sure that you want to sign out?")
-      }}</v-card-text>
+      <v-card-text>
+        {{ $t("Are you sure that you want to sign out?") }}
+      </v-card-text>
 
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="#00bfa5" text v-on:click="dialog = false">{{
-          $t("Close")
-        }}</v-btn>
-        <v-btn color="#00bfa5" text @click="signOut()">{{
-          $t("Sign out")
-        }}</v-btn>
+        <v-btn color="#00bfa5" @click="dialog = false" text>
+          {{ $t("Close") }}
+        </v-btn>
+        <v-btn color="#00bfa5" @click="signOut()" text>
+          {{ $t("Sign out") }}
+        </v-btn>
       </v-card-actions>
-    </v-card>
 
-    <alert-dialog
-      v-model="errorDialog"
-      v-bind:title="errorTitle"
-      v-bind:content="errorContent"
-    />
+      <alert-dialog
+        v-model="errorDialog"
+        v-bind:title="errorTitle"
+        v-bind:content="errorContent"
+      />
+    </v-card>
   </v-dialog>
 </template>
 
@@ -50,32 +51,34 @@ export default {
   data: () => ({
     dialog: false,
     errorDialog: false,
-    errorTitle: "",
-    errorContent: "",
+    errorTitle: null,
+    errorContent: null,
   }),
 
   methods: {
-    signOut() {
-      var selfVue = this;
+    showErrorDialog() {
+      this.errorDialog = !this.errorDialog;
+    },
 
+    signOut() {
       var obj = new Object();
       obj.variable = window.localStorage.getItem("l");
       obj.uuid = window.localStorage.getItem("sid");
       var jsonString = JSON.stringify(obj);
 
-      var connection = websocketHelper.rssReaderWs();
-      connection.onerror = function (error) {
-        websocketHelper.onError(error, selfVue);
-        selfVue.sending = false;
-      }
-      connection.onopen = function () {
-        var byte = new Uint8Array(1);
-        byte[0] = 0x04;
-        connection.send("106 ");
-        connection.send(jsonString);
-        connection.send(byte);
+      var connection = new WebSocket(
+        websocketHelper.wssUrl,
+        websocketHelper.wssProtocol
+      );
+      connection.onopen = () => {
+        this.loading = true;
+        connection.send("106 " + jsonString + "\u0004");
       };
-      connection.onclose = function () {
+      connection.onerror = (error) => {
+        websocketHelper.onError(error, this);
+        this.loading = false;
+      };
+      connection.onclose = () => {
         window.localStorage.removeItem("user");
         window.localStorage.removeItem("l");
         window.localStorage.removeItem("pic");
@@ -90,10 +93,6 @@ export default {
         this.dialog = false;
         document.location.replace(window.location.origin);
       };
-    },
-
-    showErrorDialog() {
-      this.errorDialog = !this.errorDialog;
     },
   },
 

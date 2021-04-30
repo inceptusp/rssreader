@@ -1,5 +1,6 @@
 <template>
-  <div id="success">
+  <div>
+
     <v-img
       src="../../assets/images/success.png"
       style="
@@ -9,6 +10,7 @@
         margin-right: auto;
       "
     />
+
     <p
       style="
         padding: 16px 16px 16px 16px;
@@ -23,9 +25,11 @@
         )
       }}
     </p>
-    <v-btn @click="closeWindow()">
+
+    <v-btn @click="backToHome()">
       {{ $t("Back to home") }}
     </v-btn>
+    
   </div>
 </template>
 
@@ -34,14 +38,13 @@ export default {
   name: "SuccessRedefinePassword",
 
   mounted: function () {
-    const selfVue = this;
-    window.setTimeout(function() {
-      selfVue.$emit("drawerControl", false);
+    window.setTimeout(() => {
+      this.$emit("drawerControl", false);
     }, 500);
   },
 
   methods: {
-    closeWindow() {
+    backToHome() {
       window.location.replace(window.origin);
     },
   },

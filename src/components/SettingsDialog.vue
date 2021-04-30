@@ -1,42 +1,45 @@
 <template>
   <v-dialog v-model="dialog" max-width="600">
     <v-card>
+
       <v-card-title>{{ $t("Settings") }}</v-card-title>
 
-      <v-layout align-center justify-center style="padding: 0px 24px">
+      <!-- Option on how to order the feeds list -->
+      <v-layout align-center justify-center style="padding: 0px 24px;">
         <div v-if="$vuetify.breakpoint.width > 960">
           {{ $t("Order feeds list") }}
         </div>
         <v-spacer v-if="$vuetify.breakpoint.width > 960" />
         <v-select
+          v-model="settings.feedsOrder"
           v-bind:items="feedsOrderOptions"
-          v-bind:label="
-            $vuetify.breakpoint.width < 960 ? $t('Order feeds list') : null
-          "
+          v-bind:label="$vuetify.breakpoint.width < 960 ? $t('Order feeds list') : null"
+          class="input-width"
           outlined
           hide-details
-          v-model="settings.feedsOrder"
-          class="input-width"
         />
       </v-layout>
-      <v-layout align-center justify-center style="padding: 0px 24px">
+
+      <!-- Dark mode switch button -->
+      <v-layout align-center justify-center style="padding: 0px 24px;">
         <div>{{ $t("Dark mode") }}</div>
         <v-spacer />
         <v-switch v-model="settings.darkMode" />
       </v-layout>
 
       <v-card-actions>
-        <v-btn color="red" text @click="resetSettings()">{{
-          $t("Reset")
-        }}</v-btn>
+        <v-btn color="red" @click="resetSettings()" text>
+          {{ $t("Reset") }}
+        </v-btn>
         <v-spacer></v-spacer>
-        <v-btn color="#00bfa5" text @click="dialog = false">{{
-          $t("Cancel")
-        }}</v-btn
-        ><v-btn color="#00bfa5" text @click="saveSettings()">{{
-          $t("Save")
-        }}</v-btn>
+        <v-btn color="#00bfa5" @click="dialog = false" text>
+          {{ $t("Cancel") }}
+        </v-btn
+        ><v-btn color="#00bfa5" @click="saveSettings()" text>
+          {{ $t("Save") }}
+        </v-btn>
       </v-card-actions>
+
     </v-card>
   </v-dialog>
 </template>

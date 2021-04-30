@@ -1,18 +1,26 @@
 <template>
   <v-dialog v-model="dialog" max-width="320px">
     <v-card>
-      <v-card-title class="headline" style="word-break: break-word;"><div v-html="title"/></v-card-title>
+      
+      <v-card-title class="headline" style="word-break: break-word;">
+        <div v-html="title"/>
+      </v-card-title>
 
-      <v-card-text><div v-html="content"/></v-card-text>
+      <v-card-text>
+        <div v-html="content"/>
+      </v-card-text>
 
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn
+          v-on:click="dialog = false;"
           color="#00bfa5"
           text
-          v-on:click="dialog = false;"
-        >{{ $t("Close") }}</v-btn>
+        >
+          {{ $t("Close") }}
+        </v-btn>
       </v-card-actions>
+
     </v-card>
   </v-dialog>
 </template>

@@ -1,14 +1,16 @@
 <template>
-  <div id="confirm">
-    <div id="content">
-      <v-progress-circular indeterminate size="48" color="#00bfa5" />
+  <div>
+
+    <div v-if="loading" id="content">
+      <v-progress-circular size="48" color="#00bfa5" indeterminate />
       <p style="padding: 8px;">{{ $t("Confirming your email address...") }}</p>
     </div>
+
     <alert-dialog
+      v-model="showAlert"
       v-bind:title="errorTitle"
       v-bind:content="errorContent"
-      v-bind:show="showAlert"
-    ></alert-dialog>
+    />
   </div>
 </template>
 
@@ -25,15 +27,14 @@ export default {
   },
 
   mounted: function() {
-    this.sendData();
-    const selfVue = this;
-    window.setTimeout(function() {
-      selfVue.$emit("drawerControl", false);
+    this.confirmEmail();
+    window.setTimeout(() => {
+      this.$emit("drawerControl", false);
     }, 500);
   },
 
   data: () => ({
-    sending: false,
+    loading: true,
     showAlert: false,
     errorTitle: null,
     errorContent: null,
@@ -45,35 +46,33 @@ export default {
     },
 
     sendData() {
-      const selfVue = this;
       const urlParams = this.$router.currentRoute.query;
-      const email = urlParams.email;
-      const authId = urlParams.authId;
 
       var obj = new Object();
-      obj.email = email;
-      obj.authId = authId;
+      obj.email = urlParams.email;
+      obj.authId = urlParams.authId;
       var jsonString = JSON.stringify(obj);
 
-      var connection = websocketHelper.rssReaderWs();
-      connection.onerror = function (error) {
-        websocketHelper.onError(error, selfVue);
-        selfVue.sending = false;
-      }
-      connection.onopen = function() {
-        selfVue.sending = true;
-        var byte = new Uint8Array(1);
-        byte[0] = 0x04;
-        connection.send("102 ");
-        connection.send(jsonString);
-        connection.send(byte);
+      var message = "";
+      var connection = new WebSocket(
+        websocketHelper.wssUrl,
+        websocketHelper.wssProtocol
+      );
+      connection.onopen = () => {
+        this.sending = true;
+        connection.send("102 " + jsonString + "\u0004");
       };
-      connection.onmessage = function(msg) {
-        var response = JSON.parse(msg.data);
+      connection.onerror = (error) => {
+        websocketHelper.onError(error, this);
+        this.loading = false;
+      }
+      connection.onclose = () => {
+        var response = JSON.parse(message);
         if (Object.prototype.hasOwnProperty.call(response, "error")) {
-          errorMessages(response.error, selfVue);
+          errorMessages(response.error, this);
+          this.loading = false;
         } else {
-          selfVue.$router.push("/confirmEmail/success");
+          this.$router.push("/confirmEmail/success");
         }
       };
     }

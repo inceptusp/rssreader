@@ -1,9 +1,5 @@
-function rssReaderWs() {
-    return new WebSocket(
-        "wss://rssreader.aplikoj.com/wss/",
-        "PDRAUM"
-    );
-}
+const wssUrl = "wss://rssreader.aplikoj.com/wss/";
+const wssProtocol = ["PDRAUM"];
 
 function onError(error, selfVue) {
     selfVue.errorTitle = "Communication error";
@@ -15,4 +11,4 @@ function onError(error, selfVue) {
     selfVue.showErrorDialog();
 }
 
-export default {rssReaderWs, onError};
+export default {wssUrl, wssProtocol, onError};

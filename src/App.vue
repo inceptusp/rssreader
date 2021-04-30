@@ -1,6 +1,7 @@
 <template>
   <v-app>
-    <appBar v-model="drawer" v-bind:feedName="feedName" />
+    
+    <app-bar v-model="drawer" v-bind:feedName="feedName" />
 
     <drawer v-model="drawer" />
 
@@ -11,6 +12,7 @@
         @drawerControl="openCloseDrawer"
       />
     </v-main>
+
   </v-app>
 </template>
 
@@ -20,12 +22,12 @@ import Drawer from "./components/Drawer.vue";
 
 export default {
   components: {
-    appBar: AppBar,
-    drawer: Drawer,
+    AppBar,
+    Drawer,
   },
 
   mounted: function () {
-    window.gapi.load("auth2", function () {
+    window.gapi.load("auth2", () => {
       window.gapi.auth2.init({
         client_id:
           "250982835780-6j2u60idrag2lpumgv48nal9vhi8ui8r.apps.googleusercontent.com",
@@ -33,22 +35,12 @@ export default {
     });
     window.setTimeout(function () {
       if (
-        window.localStorage.getItem("sid") == null &&
+        window.localStorage.getItem("sid") === null &&
         window.gapi.auth2.getAuthInstance().isSignedIn.get()
       ) {
         window.gapi.auth2.getAuthInstance().signOut();
       }
     }, 1000);
-    window.addEventListener("online", function () {
-      if (
-        window.localStorage.getItem("sid") == null &&
-        window.gapi.auth2.getAuthInstance().isSignedIn.get()
-      ) {
-        window.setTimeout(function () {
-          window.gapi.auth2.getAuthInstance().signOut();
-        }, 2000);
-      }
-    });
     this.loadSettings();
   },
 
@@ -67,9 +59,13 @@ export default {
     },
 
     loadSettings() {
-      if (window.localStorage.getItem("settings") != null) {
+      if (window.localStorage.getItem("settings") !== null) {
         var settings = JSON.parse(window.localStorage.getItem("settings"));
         this.$vuetify.theme.dark = settings.darkMode;
+        if(!Object.prototype.hasOwnProperty.call(settings, "feedsOrder")) {
+          settings.feedsOrder = "alpha";
+          window.localStorage.setItem("settings", JSON.stringify(settings));
+        }
       }
     },
   },

@@ -1,17 +1,20 @@
 <template>
-  <div class="FeedArticleList">
+  <div>
+
+    <!-- Shows loading when waits for server data -->
     <div v-if="loading && !netError">
-      <v-layout align-center justify-center style="height: 100%; width: 100%; padding: 4px 24px">
+      <v-layout align-center justify-center style="height: 100%; width: 100%; padding: 4px 24px;">
         <v-progress-circular color="#00bfa5" indeterminate />
       </v-layout>
     </div>
 
+    <!-- Shows a internet conection error when websocket's onerror raises -->
     <div v-else-if="netError && !loading">
-      <v-layout align-center justify-center style="height: 100%; width: 100%; padding: 4px 24px">
+      <v-layout align-center justify-center style="height: 100%; width: 100%; padding: 4px 24px;">
         <v-row>
           <v-col>
           <v-icon size="92" class="center">mdi-cloud-off-outline</v-icon>
-          <h4 class="center text-subtitle-1">
+          <h4 id="net-error-text" class="center text-subtitle-1">
             {{ $t("It seems that you don't have internet connection or our server is offline, please check your connection or try again later") }}
           </h4>
           </v-col>
@@ -19,9 +22,10 @@
       </v-layout>
     </div>
 
+    <!-- Shows the articles list otherwise -->
     <div v-else>
-      <div style="padding: 8px" v-for="article in articles" :key="article.title">
-        <article-card :article="article" />
+      <div v-for="article in articles" v-bind:key="article.title" style="padding: 8px;">
+        <article-card v-bind:article="article" />
       </div>
     </div>
 
@@ -44,8 +48,8 @@ export default {
   name: "FeedArticleList",
 
   components: {
-    ArticleCard,
     AlertDialog,
+    ArticleCard,
   },
 
   mounted: function () {
@@ -53,7 +57,7 @@ export default {
   },
 
   data: () => ({
-    name: "Feed",
+    name: null,
     netError: false,
     loading: true,
     articles: [],
@@ -68,57 +72,50 @@ export default {
     },
 
     loadFeed() {
-      const selfVue = this;
-      
       this.name = this.$route.params.name;
 
       var obj = new Object();
       obj.variable = window.localStorage.getItem("l");
       obj.uuid = window.localStorage.getItem("sid");
       obj.feedAddress = this.$route.query.feed;
-      
       var jsonString = JSON.stringify(obj);
 
       var message = "";
-      var connection = websocketHelper.rssReaderWs();
-      connection.onerror = function (error) {
-        selfVue.loading = false;
-        selfVue.netError = true;
-        error;
-      }
-      connection.onopen = function () {
-        selfVue.loading = true;
-        var byte = new Uint8Array(1);
-        byte[0] = 0x04;
-        connection.send("304 ");
-        connection.send(jsonString);
-        connection.send(byte);
+      var connection = new WebSocket(
+        websocketHelper.wssUrl,
+        websocketHelper.wssProtocol
+      );
+      connection.onopen = () => {
+        this.loading = true;
+        connection.send("304 " + jsonString + "\u0004");
       };
-      connection.onmessage = function(msg) {
+      connection.onerror = () => {
+        this.loading = false;
+        this.netError = true;
+      };
+      connection.onmessage = (msg) => {
         message += msg.data;
       }
-      connection.onclose = function () {
+      connection.onclose = () => {
         var response = JSON.parse(message);
         if (Object.prototype.hasOwnProperty.call(response, "error")) {
-          errorMessages(response.error, selfVue);
+          errorMessages(response.error, this);
+          this.loading = false;
         } else {
-          selfVue.loadXml(response.feedContent);
-          selfVue.loading = false;
+          this.loadXml(response.feedContent);
+          this.loading = false;
         }
       }
     },
 
     loadXml(xmlString) {
-      const selfVue = this;
-      
       var parser, xmlDoc;
 
       parser = new DOMParser();
       xmlDoc = parser.parseFromString(xmlString,"text/xml");
-      console.log(xmlDoc);
       
       xmlDoc.getElementsByTagName("item").forEach((element) => {
-        selfVue.articles.push({
+        this.articles.push({
           title: element.getElementsByTagName("title")[0].childNodes[0]
             .nodeValue,
           description: element.getElementsByTagName("description")[0]
@@ -153,6 +150,12 @@ export default {
 </script>
 
 <style scoped>
+#net-error-text {
+  width: 80%;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
 .center {
   display: block;
   margin-left: auto;

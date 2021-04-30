@@ -1,113 +1,124 @@
 <template>
   <v-dialog v-model="dialog" max-width="600">
     <v-card>
-      <v-layout align-center justify-center style="padding: 8px">
+
+      <!-- Selector to load the right form: login or sign up -->
+      <v-layout align-center justify-center style="padding: 8px;">
         <v-btn
-          text
-          @click="loginOrSignUp = 'login'"
           v-bind:color="loginOptionColor"
-          >{{ $t("Login") }}</v-btn
-        >
-        <v-btn
+          @click="loginOrSignUp = 'login'"
           text
-          @click="loginOrSignUp = 'signup'"
-          v-bind:color="signupOptionColor"
-          >{{ $t("Sign up") }}</v-btn
         >
+          {{ $t("Login") }}
+        </v-btn>
+        <v-btn
+          v-bind:color="signupOptionColor"
+          @click="loginOrSignUp = 'signup'"
+          text
+        >
+          {{ $t("Sign up") }}
+        </v-btn>
       </v-layout>
 
-      <v-form v-if="loginOrSignUp == 'login'" ref="formRef">
-        <v-layout align-center justify-center style="padding: 4px 24px">
+      <!-- Login form -->
+      <v-form v-if="loginOrSignUp === 'login'" ref="formRef">
+
+        <!-- Email input field -->
+        <v-layout align-center justify-center style="padding: 4px 24px;">
           <div v-if="$vuetify.breakpoint.width > 960">
             {{ $t("Email") }}
           </div>
           <v-spacer v-if="$vuetify.breakpoint.width > 960" />
           <v-text-field
-            class="input-width"
             v-model="email"
             v-bind:label="$vuetify.breakpoint.width < 960 ? $t('Email') : null"
             v-bind:rules="[required]"
-            outlined
+            class="input-width"
             hide-details="auto"
+            outlined
           />
         </v-layout>
-        <v-layout align-center justify-center style="padding: 4px 24px">
+
+        <!-- Password input field -->
+        <v-layout align-center justify-center style="padding: 4px 24px;">
           <div v-if="$vuetify.breakpoint.width > 960">
             {{ $t("Password") }}
           </div>
           <v-spacer v-if="$vuetify.breakpoint.width > 960" />
           <v-text-field
-            class="input-width"
             v-model="password"
-            v-bind:label="
-              $vuetify.breakpoint.width < 960 ? $t('Password') : null
-            "
+            v-bind:label="$vuetify.breakpoint.width < 960 ? $t('Password') : null"
             v-bind:append-icon="showPass1 ? 'mdi-eye' : 'mdi-eye-off'"
             v-bind:type="showPass1 ? 'text' : 'password'"
             v-bind:rules="[required, minLength]"
             @click:append="showPass1 = !showPass1"
-            outlined
+            class="input-width"
             hide-details="auto"
+            outlined
           />
         </v-layout>
-        <v-layout align-center justify-center style="padding: 4px 24px">
+
+        <!-- Forgot password link -->
+        <v-layout align-center justify-center style="padding: 4px 24px;">
           <v-spacer v-if="$vuetify.breakpoint.width > 960" />
           <div>
             <a @click="forgotPassword()">{{ $t("Forgot my password") }}</a>
           </div>
         </v-layout>
+
+        <!-- Login buttons (login w/ Google and server login) -->
         <v-layout
           align-center
           justify-center
-          style="padding: 8px 24px 16px 24px"
+          style="padding: 8px 24px 16px 24px;"
         >
           <v-layout>
             <v-row
+              v-if="$vuetify.breakpoint.width < 960"
               align="center"
               justify="center"
-              style="padding: 8px 0 0 0"
-              v-if="$vuetify.breakpoint.width < 960"
+              style="padding: 8px 0 0 0;"
             >
               <v-btn
+                v-bind:loading="loading"
+                v-bind:disabled="loading"
                 id="gBtn"
-                style="margin: 8px"
-                v-bind:loading="sending"
-                v-bind:disabled="sending"
               >
                 <img
                   src="../assets/images/google.png"
                   referrerpolicy="no-referrer"
                   width="30px"
-                  style="padding-right: 8px"
+                  style="padding-right: 8px;"
                 />
                 {{ $t("Login with Google") }}
               </v-btn>
               <v-btn
-                style="margin: 8px"
-                v-bind:loading="sending"
-                v-bind:disabled="sending"
+                v-bind:loading="loading"
+                v-bind:disabled="loading"
                 @click="loginSignUp()"
-                >{{ $t("Login") }}</v-btn
+                style="margin: 8px;"
               >
+                {{ $t("Login") }}
+              </v-btn>
             </v-row>
             <v-layout v-else>
               <v-btn
+                v-bind:loading="loading"
+                v-bind:disabled="loading"
                 id="gBtn"
-                v-bind:loading="sending"
-                v-bind:disabled="sending"
               >
                 <img
                   src="../assets/images/google.png"
                   referrerpolicy="no-referrer"
                   width="30px"
-                  style="padding-right: 8px"
+                  style="padding-right: 8px;"
                 />
                 {{ $t("Login with Google") }}
               </v-btn>
               <v-spacer />
               <v-btn
-                v-bind:loading="sending"
-                v-bind:disabled="sending"
+                v-bind:loading="loading"
+                v-bind:disabled="loading"
                 @click="loginSignUp()"
                 >{{ $t("Login") }}</v-btn
               >
@@ -116,128 +127,136 @@
         </v-layout>
       </v-form>
 
-      <v-form v-if="loginOrSignUp == 'signup'" ref="formRef">
-        <v-layout align-center justify-center style="padding: 4px 24px">
+      <!-- Sign up form -->
+      <v-form v-if="loginOrSignUp === 'signup'" ref="formRef">
+
+        <!-- Name input field -->
+        <v-layout align-center justify-center style="padding: 4px 24px;">
           <div v-if="$vuetify.breakpoint.width > 960">
             {{ $t("Name") }}
           </div>
           <v-spacer v-if="$vuetify.breakpoint.width > 960" />
           <v-text-field
-            class="input-width"
             v-model="name"
             v-bind:label="$vuetify.breakpoint.width < 960 ? $t('Name') : null"
             v-bind:rules="[required]"
-            outlined
+            class="input-width"
             hide-details="auto"
+            outlined
           />
         </v-layout>
-        <v-layout align-center justify-center style="padding: 4px 24px">
+
+        <!-- Email input field -->
+        <v-layout align-center justify-center style="padding: 4px 24px;">
           <div v-if="$vuetify.breakpoint.width > 960">
             {{ $t("Email") }}
           </div>
           <v-spacer v-if="$vuetify.breakpoint.width > 960" />
           <v-text-field
-            class="input-width"
             v-model="email"
             v-bind:label="$vuetify.breakpoint.width < 960 ? $t('Email') : null"
             v-bind:rules="[required]"
-            outlined
+            class="input-width"
             hide-details="auto"
+            outlined
           />
         </v-layout>
-        <v-layout align-center justify-center style="padding: 4px 24px">
+
+        <!-- Password input field -->
+        <v-layout align-center justify-center style="padding: 4px 24px;">
           <div v-if="$vuetify.breakpoint.width > 960">
             {{ $t("Password") }}
           </div>
           <v-spacer v-if="$vuetify.breakpoint.width > 960" />
           <v-text-field
-            class="input-width"
             v-model="password"
-            v-bind:label="
-              $vuetify.breakpoint.width < 960 ? $t('Password') : null
-            "
+            v-bind:label="$vuetify.breakpoint.width < 960 ? $t('Password') : null"
             v-bind:append-icon="showPass1 ? 'mdi-eye' : 'mdi-eye-off'"
             v-bind:type="showPass1 ? 'text' : 'password'"
             v-bind:rules="[required, minLength]"
             @click:append="showPass1 = !showPass1"
-            outlined
+            class="input-width"
             hide-details="auto"
+            outlined
           />
         </v-layout>
-        <v-layout align-center justify-center style="padding: 4px 24px">
+
+        <!-- Repeat password input field -->
+        <v-layout align-center justify-center style="padding: 4px 24px;">
           <div v-if="$vuetify.breakpoint.width > 960">
             {{ $t("Repeat password") }}
           </div>
           <v-spacer v-if="$vuetify.breakpoint.width > 960" />
           <v-text-field
-            class="input-width"
             v-model="repeatPassword"
-            v-bind:label="
-              $vuetify.breakpoint.width < 960 ? $t('Repeat password') : null
-            "
+            v-bind:label="$vuetify.breakpoint.width < 960 ? $t('Repeat password') : null"
             v-bind:append-icon="showPass2 ? 'mdi-eye' : 'mdi-eye-off'"
             v-bind:type="showPass2 ? 'text' : 'password'"
             v-bind:rules="[required, minLength, passwordMatch]"
             @click:append="showPass2 = !showPass2"
-            outlined
+            class="input-width"
             hide-details="auto"
+            outlined
           />
         </v-layout>
+
+        <!-- Sign up buttons (sign up w/ Google and server sign up) -->
         <v-layout
           align-center
           justify-center
-          style="padding: 8px 24px 16px 24px"
+          style="padding: 8px 24px 16px 24px;"
         >
           <v-layout>
             <v-row
               align="center"
               justify="center"
-              style="padding: 8px 0 0 0"
+              style="padding: 8px 0 0 0;"
               v-if="$vuetify.breakpoint.width < 960"
             >
               <v-btn
+                v-bind:loading="loading"
+                v-bind:disabled="loading"
                 id="gBtn"
-                style="margin: 8px"
-                v-bind:loading="sending"
-                v-bind:disabled="sending"
               >
                 <img
                   src="../assets/images/google.png"
                   referrerpolicy="no-referrer"
                   width="30px"
-                  style="padding-right: 8px"
+                  style="padding-right: 8px;"
                 />
                 {{ $t("Sign up with Google") }}
               </v-btn>
               <v-btn
-                style="margin: 8px"
-                v-bind:loading="sending"
-                v-bind:disabled="sending"
+                v-bind:loading="loading"
+                v-bind:disabled="loading"
                 @click="loginSignUp()"
-                >{{ $t("Sign up") }}</v-btn
+                style="margin: 8px;"
               >
+                {{ $t("Sign up") }}
+              </v-btn>
             </v-row>
             <v-layout v-else>
               <v-btn
+                v-bind:loading="loading"
+                v-bind:disabled="loading"
                 id="gBtn"
-                v-bind:loading="sending"
-                v-bind:disabled="sending"
               >
                 <img
                   src="../assets/images/google.png"
                   referrerpolicy="no-referrer"
                   width="30px"
-                  style="padding-right: 8px"
+                  style="padding-right: 8px;"
                 />
                 {{ $t("Sign up with Google") }}
               </v-btn>
               <v-spacer />
               <v-btn
-                v-bind:loading="sending"
-                v-bind:disabled="sending"
+                v-bind:loading="loading"
+                v-bind:disabled="loading"
                 @click="loginSignUp()"
-                >{{ $t("Sign up") }}</v-btn
               >
+                {{ $t("Sign up") }}
+              </v-btn>
             </v-layout>
           </v-layout>
         </v-layout>
@@ -254,6 +273,7 @@
 
 <script>
 import AlertDialog from "../components/AlertDialog";
+import { errorMessages } from '../errorMessages';
 import websocketHelper from "../websocketHelper";
 
 export default {
@@ -273,11 +293,11 @@ export default {
 
   computed: {
     loginOptionColor() {
-      return this.loginOrSignUp == "login" ? "#00bfa5" : "black";
+      return this.loginOrSignUp === "login" ? "#00bfa5" : "black";
     },
 
     signupOptionColor() {
-      return this.loginOrSignUp == "signup" ? "#00bfa5" : "black";
+      return this.loginOrSignUp === "signup" ? "#00bfa5" : "black";
     },
 
     passwordMatch() {
@@ -292,7 +312,7 @@ export default {
 
     minLength() {
       return (value) =>
-        (value != null && value.length >= 6) ||
+        (value !== null && value.length >= 6) ||
         this.$t("The password is to short");
     },
   },
@@ -309,88 +329,95 @@ export default {
     errorDialog: false,
     errorTitle: null,
     errorContent: null,
-    sending: false,
+    loading: false,
   }),
 
   methods: {
-    onSignIn(user) {
-      this.sendData(user);
-    },
-
     showErrorDialog() {
       this.errorDialog = !this.errorDialog;
     },
 
     forgotPassword() {
-      this.errorTitle = this.$t("A recovery email has been sent");
-      this.errorContent = this.$t(
-        "We have sent a password recovery email to your inbox. Check it (or the spam folder) for more instructions."
+      var obj = new Object();
+      obj.email = this.email;
+      var jsonString = JSON.stringify(obj);
+        
+      var connection = new WebSocket(
+        websocketHelper.wssUrl,
+        websocketHelper.wssProtocol
       );
-      this.showErrorDialog();
+      connection.onopen = () => {
+        this.loading = true;
+        connection.send('103 ' + jsonString + '\u0004');
+      };
+      connection.onerror = (error) => {
+        websocketHelper.onError(error, this);
+        this.loading = false;
+      }
+      connection.onclose = () =>  {
+        this.errorTitle = this.$t("A recovery email has been sent");
+        this.errorContent = this.$t(
+          "We have sent a password recovery email to your inbox. Check it (or the spam folder) for more instructions."
+        );
+        this.showErrorDialog();
+        this.loading = false;
+      }
     },
 
     loginSignUp(user) {
-      if (this.$refs.formRef.validate() || user != undefined) {
-        const selfVue = this;
-
+      if (this.$refs.formRef.validate() || user !== undefined) {
         var obj = new Object();
-        if (selfVue.loginOrSignUp == "login") {
-          if (user == undefined) {
-            obj.email = selfVue.email;
-            obj.password = selfVue.password;
+        if (this.loginOrSignUp === "login") {
+          if (user === undefined) {
+            obj.email = this.email;
+            obj.password = this.password;
           } else {
             obj.jwt = user.getAuthResponse().id_token;
           }
         } else {
-          if (user == undefined) {
-            obj.name = selfVue.name;
-            obj.email = selfVue.email;
-            obj.password = selfVue.password;
+          if (user === undefined) {
+            obj.name = this.name;
+            obj.email = this.email;
+            obj.password = this.password;
           } else {
             obj.jwt = user.getAuthResponse().id_token;
           }
         }
         var jsonString = JSON.stringify(obj);
         
-        var connection = websocketHelper.rssReaderWs();
-        connection.onerror = function (error) {
-          websocketHelper.onError(error, selfVue);
-          selfVue.sending = false;
-        }
-        connection.onopen = function () {
-          selfVue.sending = true;
-          var byte = new Uint8Array(1);
-          byte[0] = 0x04;
-          if (selfVue.loginOrSignUp == "login") {
-            connection.send("101 ");
+        var message = "";
+        var connection = new WebSocket(
+          websocketHelper.wssUrl,
+          websocketHelper.wssProtocol
+        );
+        connection.onopen = () => {
+          this.loading = true;
+          if (this.loginOrSignUp === "login") {
+            connection.send("101 " + jsonString + "\u0004");
           } else {
-            connection.send("100 ");
+            connection.send("100 " + jsonString + "\u0004");
           }
-          connection.send(jsonString);
-          connection.send(byte);
         };
-        connection.onmessage = function (msg) {
-          var response = JSON.parse(msg.data);
+        connection.onerror = (error) => {
+          websocketHelper.onError(error, this);
+          this.loading = false;
+        }
+        connection.onmessage = (msg) => {
+          message += msg.data;
+        };
+        connection.onclose = () => {
+          var response = JSON.parse(message);
           if (Object.prototype.hasOwnProperty.call(response, "error")) {
-            switch (response.error) {
-              default:
-                selfVue.errorTitle = "Comunication error";
-                selfVue.errorContent =
-                  '<p>There was a communication error with the server and/or the internet. Check your connection or try again later.</p><p style="opacity: 0.8">Error code: ' +
-                  response.error +
-                  "</p>";
-                selfVue.showErrorDialog();
-                selfVue.sending = false;
-            }
+            errorMessages(response.error, this);
+            this.loading = false;
           } else {
-            console.log(response);
             window.localStorage.setItem("user", response.name);
             window.localStorage.setItem("pic", response.pic);
             window.localStorage.setItem("l", response.variable);
             window.localStorage.setItem("login", response.login);
             window.localStorage.setItem("sid", response.uuid);
             window.localStorage.setItem("feeds", response.feeds);
-            selfVue.dialog = false;
+            this.dialog = false;
             document.location.reload();
           }
         };
@@ -401,31 +428,30 @@ export default {
   watch: {
     value: function () {
       this.dialog = this.value;
-      if (this.loginOrSignUp == null) {
+      if (this.loginOrSignUp === null) {
         this.loginOrSignUp = "login";
       }
     },
 
     dialog: function () {
-      if (this.$refs.formRef != undefined) {
+      if (!this.dialog) {
         this.$refs.formRef.reset();
       }
       this.$emit("input", this.dialog);
     },
 
     loginOrSignUp: function () {
-      if (this.$refs.formRef != undefined) {
+      if (this.$refs.formRef !== undefined) {
         this.$refs.formRef.reset();
       }
-      const selfVue = this;
-      window.setTimeout(function () {
+      window.setTimeout(() => {
         window.gapi.auth2
           .getAuthInstance()
           .attachClickHandler(
             document.getElementById("gBtn"),
             {},
-            function (user) {
-              selfVue.loginSignUp(user);
+            (user) => {
+              this.loginSignUp(user);
             }
           );
       }, 500);

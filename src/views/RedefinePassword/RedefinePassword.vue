@@ -1,55 +1,61 @@
 <template>
-  <div id="form">
+  <div>
+
+    <!-- Text that appears on top of the page -->
     <div id="preamble">
-      <v-icon size="48" style="padding: 16px">mdi-key</v-icon>
-      <h2 style="padding: 8px">{{ $t("Redefine password") }}</h2>
-      <p style="padding: 8px; opacity: 0.8">
+      <v-icon size="48" style="padding: 16px;">mdi-key</v-icon>
+      <h2 style="padding: 8px;">{{ $t("Redefine password") }}</h2>
+      <p style="padding: 8px; opacity: 0.8.">
         {{ $t("Enter your new password in the fields below to change it.") }}
       </p>
     </div>
+
+    <!-- Redefine password form -->
     <v-form ref="formRef">
-      <v-layout align-center justify-center style="padding: 4px 20%">
+
+      <!-- New password input field -->
+      <v-layout align-center justify-center style="padding: 4px 20%;">
         <div v-if="$vuetify.breakpoint.width > 960">
           {{ $t("New password") }}
         </div>
         <v-spacer v-if="$vuetify.breakpoint.width > 960" />
         <v-text-field
           v-model="newPassword"
-          v-bind:label="
-            $vuetify.breakpoint.width < 960 ? $t('New password') : null
-          "
-          hide-details="auto"
+          v-bind:label="$vuetify.breakpoint.width < 960 ? $t('New password') : null"
           v-bind:append-icon="showPass1 ? 'mdi-eye' : 'mdi-eye-off'"
           v-bind:type="showPass1 ? 'text' : 'password'"
           v-bind:rules="[required, minLength]"
           @click:append="showPass1 = !showPass1"
-          outlined
           class="input-width"
+          hide-details="auto"
+          outlined
         />
       </v-layout>
-      <v-layout align-center justify-center style="padding: 4px 20%">
+
+      <!-- Repeat new password input field -->
+      <v-layout align-center justify-center style="padding: 4px 20%;">
         <div v-if="$vuetify.breakpoint.width > 960">
           {{ $t("Repeat password") }}
         </div>
         <v-spacer v-if="$vuetify.breakpoint.width > 960" />
         <v-text-field
           v-model="repeatNewPassword"
-          v-bind:label="
-            $vuetify.breakpoint.width < 960 ? $t('Repeat password') : null
-          "
-          hide-details="auto"
+          v-bind:label="$vuetify.breakpoint.width < 960 ? $t('Repeat password') : null"
           v-bind:append-icon="showPass2 ? 'mdi-eye' : 'mdi-eye-off'"
           v-bind:type="showPass2 ? 'text' : 'password'"
           v-bind:rules="[required, minLength, passwordMatch]"
           @click:append="showPass2 = !showPass2"
-          outlined
           class="input-width"
+          hide-details="auto"
+          outlined
         />
       </v-layout>
     </v-form>
+
+    <!-- Confirm fab -->
     <v-fab-transition>
-      <v-btn fab large bottom right fixed @click="sendData()">
-        <div v-if="!sending">
+      <v-btn v-bind:disabled="!loading" @click="redefinePassword()" fab large bottom right fixed>
+        <div v-if="!loading">
           <v-icon>mdi-check</v-icon>
         </div>
         <div v-else>
@@ -57,11 +63,12 @@
         </div>
       </v-btn>
     </v-fab-transition>
+
     <alert-dialog
+      v-model="errorDialog"
       v-bind:title="errorTitle"
       v-bind:content="errorContent"
-      v-bind:show="showAlert"
-    ></alert-dialog>
+    />
   </div>
 </template>
 
@@ -78,9 +85,8 @@ export default {
   },
 
   mounted: function () {
-    const selfVue = this;
-    window.setTimeout(function () {
-      selfVue.$emit("drawerControl", false);
+    window.setTimeout(() => {
+      this.$emit("drawerControl", false);
     }, 250);
   },
 
@@ -97,7 +103,7 @@ export default {
 
     minLength() {
       return (value) =>
-        (value != null && value.length >= 6) ||
+        (value !== null && value.length >= 6) ||
         this.$t("The password is to short");
     },
   },
@@ -107,50 +113,49 @@ export default {
     showPass2: false,
     newPassword: null,
     repeatNewPassword: null,
-    sending: false,
-    showAlert: false,
+    loading: false,
+    errorDialog: false,
     errorTitle: null,
     errorContent: null,
   }),
 
   methods: {
-    showAlertDialog() {
-      this.showAlert = !this.showAlert;
+    showErrorDialog() {
+      this.errorDialog = !this.errorDialog;
     },
 
-    sendData() {
+    redefinePassword() {
       if (this.$refs.formRef.validate()) {
-        const selfVue = this;
         const urlParams = this.$router.currentRoute.query;
-        const email = urlParams.email;
-        const authId = urlParams.authId;
-        const password = this.newPassword;
 
         var obj = new Object();
-        obj.email = email;
-        obj.authId = authId;
-        obj.password = password;
+        obj.email = urlParams.email;
+        obj.authId = urlParams.authId;
+        obj.password = this.newPassword;
         var jsonString = JSON.stringify(obj);
 
-        var connection = websocketHelper.rssReaderWs();
-        connection.onerror = function (error) {
-          websocketHelper.onError(error, selfVue);
-          selfVue.sending = false;
-        }
-        connection.onopen = function () {
-          selfVue.sending = true;
-          var byte = new Uint8Array(1);
-          byte[0] = 0x04;
-          connection.send("103 ");
-          connection.send(jsonString);
-          connection.send(byte);
+        var message = "";
+        var connection = new WebSocket(
+          websocketHelper.wssUrl,
+          websocketHelper.wssProtocol
+        );
+        connection.onopen = () => {
+          this.loading = true;
+          connection.send("103 " + jsonString + "\u0004");
         };
-        connection.onmessage = function (msg) {
-          var response = JSON.parse(msg.data);
+        connection.onerror = (error) => {
+          websocketHelper.onError(error, this);
+          this.loading = false;
+        };
+        connection.onmessage = (msg) => {
+          message += msg.data;
+        };
+        connection.onclose = () => {
+          var response = JSON.parse(message);
           if (Object.prototype.hasOwnProperty.call(response, "error")) {
-            errorMessages(response.error, selfVue);
+            errorMessages(response.error, this);
           } else {
-            selfVue.$router.push("/redefinePassword/success");
+            this.$router.push("/redefinePassword/success");
           }
         };
       }

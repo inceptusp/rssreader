@@ -2,11 +2,12 @@
   <v-dialog
     v-model="dialog"
     max-width="800"
+    transition="dialog-bottom-transition"
     scrollable
     fullscreen
-    transition="dialog-bottom-transition"
   >
     <v-card>
+
       <v-card-title>
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
@@ -18,16 +19,16 @@
         </v-tooltip>
         <div class="title">{{ title }}</div>
         <v-spacer />
-        <v-menu offset-y v-bind:close-on-content-click="false">
+        <v-menu v-bind:close-on-content-click="false" offset-y>
           <template v-slot:activator="{ on: onMenu, attrs: attrsMenu }">
             <v-tooltip bottom>
               <template
                 v-slot:activator="{ on: onTooltip, attrs: attrsTooltip }"
               >
                 <v-btn
-                  icon
                   v-bind="{ ...attrsTooltip, ...attrsMenu }"
                   v-on="{ ...onTooltip, ...onMenu }"
+                  icon
                 >
                   <v-icon>mdi-share-variant</v-icon>
                 </v-btn>
@@ -42,10 +43,12 @@
           </v-list>
         </v-menu>
       </v-card-title>
+
       <v-divider />
+
       <v-card-text
-        style="text-align: justify; padding-top: 16px"
         v-html="content"
+        style="text-align: justify; padding-top: 16px;"
       />
     </v-card>
   </v-dialog>
@@ -90,8 +93,14 @@ export default {
   width: 65vw;
 }
 
+.disable-overflow::-webkit-scrollbar {
+  display: none;
+}
+
 .disable-overflow {
   overflow: scroll;
   text-overflow: unset;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 </style>

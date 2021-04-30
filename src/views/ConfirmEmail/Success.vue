@@ -1,5 +1,6 @@
 <template>
-  <div id="success">
+  <div>
+
     <v-img
       src="../../assets/images/success.png"
       style="
@@ -9,6 +10,7 @@
         margin-right: auto;
       "
     />
+
     <p
       style="
         padding: 16px 16px 16px 16px;
@@ -19,6 +21,7 @@
     >
       {{ $t("Your email address has been successfully confirmed, thanks.") }}
     </p>
+
     <v-btn @click="backToHome()">
       {{ $t("Back to home") }}
     </v-btn>
@@ -30,9 +33,8 @@ export default {
   name: "SuccessConfirmEmail",
 
   mounted: function () {
-    const selfVue = this;
-    window.setTimeout(function() {
-      selfVue.$emit("drawerControl", false);
+    window.setTimeout(() => {
+      this.$emit("drawerControl", false);
     }, 500);
   },
 

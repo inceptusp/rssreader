@@ -1,22 +1,23 @@
 <template>
   <v-dialog v-model="dialog" max-width="320">
     <v-card>
+
       <v-card-title>{{ $t("Are you sure?") }}</v-card-title>
 
       <v-card-text>{{ $t("Are you sure that you want to delete this feed?") }}</v-card-text>
 
-      <v-card-actions v-if="!sending">
+      <v-card-actions v-if="!loading">
         <v-spacer></v-spacer>
-        <v-btn color="#00bfa5" text v-on:click="dialog = false">{{
-          $t("Cancel")
-        }}</v-btn
-        ><v-btn color="#00bfa5" text v-on:click="removeFeed()">{{
-          $t("Confirm")
-        }}</v-btn>
+        <v-btn color="#00bfa5" @click="dialog = false" text>
+          {{ $t("Cancel") }}
+        </v-btn>
+        <v-btn color="#00bfa5" @click="removeFeed()" text>
+          {{ $t("Confirm") }}
+        </v-btn>
       </v-card-actions>
       <v-card-actions v-else>
         <v-spacer></v-spacer>
-        <v-progress-circular indeterminate color="#00bfa5" />
+        <v-progress-circular color="#00bfa5" indeterminate />
       </v-card-actions>
     </v-card>
 
@@ -53,7 +54,7 @@ export default {
 
   data: () => ({
     dialog: false,
-    sending: false,
+    loading: false,
     errorDialog: false,
     errorTitle: null,
     errorContent: null,
@@ -65,8 +66,6 @@ export default {
     },
 
     removeFeed: async function() {
-      const selfVue = this;
-
       var db = new Dexie('rssReader');
       db.version(1).stores({
         feeds: "feedAddress,feedName,*feedCategories",
@@ -74,34 +73,37 @@ export default {
       await db.open();
       
       var obj = new Object();
-      obj.feedAddress = selfVue.link;
+      obj.feedAddress = this.link;
       obj.variable = window.localStorage.getItem("l");
       obj.uuid = window.localStorage.getItem("sid");
-    
       var jsonString = JSON.stringify(obj);
 
-      var connection = websocketHelper.rssReaderWs();
-      connection.onerror = function (error) {
-        websocketHelper.onError(error, selfVue);
-        selfVue.sending = false;
-      }
-      connection.onopen = function () {
-        selfVue.sending = true;
-        var byte = new Uint8Array(1);
-        byte[0] = 0x04;
-        connection.send("305 ");
-        connection.send(jsonString);
-        connection.send(byte);
+      var message = "";
+      var connection = new WebSocket(
+        websocketHelper.wssUrl,
+        websocketHelper.wssProtocol
+      );
+      connection.onopen = () => {
+        this.loading = true;
+        connection.send("305 " + jsonString + "\u0004");
       };
-      connection.onmessage = function (msg) {
-        var response = JSON.parse(msg.data);
+      connection.onerror = (error) => {
+        websocketHelper.onError(error, this);
+        this.loading = false;
+      }
+      connection.onmessage = (msg) => {
+        message += msg.data;
+      };
+      connection.onclose = () => {
+        var response = JSON.parse(message);
         if (Object.prototype.hasOwnProperty.call(response, "error")) {
-          errorMessages(response.error, selfVue);
+          errorMessages(response.error, this);
+          this.loading = false;
         } else {
-          db.feeds.delete(selfVue.link);
-          selfVue.dialog = false;
-          selfVue.sending = false;
-          selfVue.$emit("feedListUpdate");
+          db.feeds.delete(this.link);
+          this.dialog = false;
+          this.loading = false;
+          this.$emit("feedListUpdate");
         }
       }
     },
@@ -113,9 +115,6 @@ export default {
     },
 
     dialog: function () {
-      if (this.$refs.formRef != undefined) {
-        this.$refs.formRef.reset();
-      }
       this.$emit("input", this.dialog);
     },
   },

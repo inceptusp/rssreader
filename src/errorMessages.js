@@ -6,8 +6,7 @@ export function errorMessages(errorCode, selfVue) {
             '<p>Houve um erro na transmissão, verifique o link que você recebeu e tente novamente.</p><p style="opacity: 0.8">Código de erro: ' +
             errorCode +
             "</p>";
-            selfVue.showAlertDialog();
-            selfVue.sending = false;
+            selfVue.showErrorDialog();
             break;
         case "user_not_found":
             selfVue.errorTitle = "Usuário não encontrado";
@@ -15,8 +14,7 @@ export function errorMessages(errorCode, selfVue) {
             '<p>Este usuário não foi encontrado em nosso sistema Verifique o link que você recebeu e tente novamente.</p><p style="opacity: 0.8">Código de erro: ' +
             errorCode +
             "</p>";
-            selfVue.showAlertDialog();
-            selfVue.sending = false;
+            selfVue.showErrorDialog();
             break;
         case "exception_empty_confid" || "wrong_confid":
             selfVue.errorTitle = "Erro com a chave de verificação";
@@ -24,8 +22,7 @@ export function errorMessages(errorCode, selfVue) {
             '<p>Houve um erro ao confirmar a chave de verificação, verifique o link que você recebeu e tente novamente.</p><p style="opacity: 0.8">Código de erro: ' +
             errorCode +
             "</p>";
-            selfVue.showAlertDialog();
-            selfVue.sending = false;
+            selfVue.showErrorDialog();
             break;
         default:
             selfVue.errorTitle = "Erro desconhecido";
@@ -34,7 +31,6 @@ export function errorMessages(errorCode, selfVue) {
             errorCode +
             "</p>";
             selfVue.showErrorDialog();
-            selfVue.sending = false;
             break;
     }
 }
