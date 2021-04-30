@@ -50,7 +50,7 @@
             v-bind:label="$vuetify.breakpoint.width < 960 ? $t('Password') : null"
             v-bind:append-icon="showPass1 ? 'mdi-eye' : 'mdi-eye-off'"
             v-bind:type="showPass1 ? 'text' : 'password'"
-            v-bind:rules="[required, minLength]"
+            v-bind:rules="isForgot ? [] : [required, minLength]"
             @click:append="showPass1 = !showPass1"
             class="input-width"
             hide-details="auto"
@@ -320,6 +320,7 @@ export default {
   data: () => ({
     dialog: false,
     loginOrSignUp: null,
+    isForgot: false,
     email: null,
     password: null,
     name: null,
@@ -338,29 +339,38 @@ export default {
     },
 
     forgotPassword() {
-      var obj = new Object();
-      obj.email = this.email;
-      var jsonString = JSON.stringify(obj);
-        
-      var connection = new WebSocket(
-        websocketHelper.wssUrl,
-        websocketHelper.wssProtocol
-      );
-      connection.onopen = () => {
-        this.loading = true;
-        connection.send('103 ' + jsonString + '\u0004');
-      };
-      connection.onerror = (error) => {
-        websocketHelper.onError(error, this);
-        this.loading = false;
-      }
-      connection.onclose = () =>  {
-        this.errorTitle = this.$t("A recovery email has been sent");
-        this.errorContent = this.$t(
-          "We have sent a password recovery email to your inbox. Check it (or the spam folder) for more instructions."
+      this.isForgot = true;
+      this.sendForgotPasswordEmail();
+    },
+
+    sendForgotPasswordEmail() {
+      if(this.$refs.formRef.validate()) { //* Validate only email input field but it requires vuetify 3, needs to wait
+        var obj = new Object();
+        obj.email = this.email;
+        var jsonString = JSON.stringify(obj);
+          
+        var connection = new WebSocket(
+          websocketHelper.wssUrl,
+          websocketHelper.wssProtocol
         );
-        this.showErrorDialog();
-        this.loading = false;
+        connection.onopen = () => {
+          this.loading = true;
+          connection.send('103 ' + jsonString + '\u0004');
+        };
+        connection.onerror = (error) => {
+          websocketHelper.onError(error, this);
+          this.loading = false;
+        }
+        connection.onclose = () =>  {
+          this.errorTitle = this.$t("A recovery email has been sent");
+          this.errorContent = this.$t(
+            "We have sent a password recovery email to your inbox. Check it (or the spam folder) for more instructions."
+          );
+          this.showErrorDialog();
+          this.isForgot = false;
+          this.loading = false;
+          this.$refs.formRef.reset();
+        }
       }
     },
 
@@ -417,6 +427,7 @@ export default {
             window.localStorage.setItem("login", response.login);
             window.localStorage.setItem("sid", response.uuid);
             window.localStorage.setItem("feeds", response.feeds);
+            window.localStorage.setItem("verified", response.verified);
             this.dialog = false;
             document.location.reload();
           }
