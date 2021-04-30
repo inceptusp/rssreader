@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="success">
 
     <v-img
       src="../../assets/images/success.png"

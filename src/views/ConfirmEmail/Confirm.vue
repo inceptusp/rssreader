@@ -41,11 +41,11 @@ export default {
   }),
 
   methods: {
-    showAlertDialog() {
+    showErrorDialog() {
       this.showAlert = !this.showAlert;
     },
 
-    sendData() {
+    confirmEmail() {
       const urlParams = this.$router.currentRoute.query;
 
       var obj = new Object();
@@ -65,12 +65,16 @@ export default {
       connection.onerror = (error) => {
         websocketHelper.onError(error, this);
         this.loading = false;
+      };
+      connection.onmessage = (msg) => {
+        message += msg.data;
       }
       connection.onclose = () => {
         var response = JSON.parse(message);
         if (Object.prototype.hasOwnProperty.call(response, "error")) {
           errorMessages(response.error, this);
           this.loading = false;
+          window.location.replace(window.origin);
         } else {
           this.$router.push("/confirmEmail/success");
         }

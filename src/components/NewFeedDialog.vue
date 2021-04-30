@@ -155,17 +155,17 @@ export default {
         connection.onmessage = (msg) => {
           message += msg.data;
         };
-        connection.ondone = () => {
+        connection.onclose = () => {
           var response = JSON.parse(message);
           if (Object.prototype.hasOwnProperty.call(response, "error")) {
             errorMessages(response.error, this);
             this.loading = false;
           } else {
-            this.loading = false;
             this.dialog = false;
             this.$emit("feedListUpdate");
+            this.loading = false;
           }
-        }
+        };
       }
     },
   },

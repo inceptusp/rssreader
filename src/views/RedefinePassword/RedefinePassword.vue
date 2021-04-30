@@ -54,7 +54,7 @@
 
     <!-- Confirm fab -->
     <v-fab-transition>
-      <v-btn v-bind:disabled="!loading" @click="redefinePassword()" fab large bottom right fixed>
+      <v-btn v-bind:disabled="loading" @click="redefinePassword()" fab large bottom right fixed>
         <div v-if="!loading">
           <v-icon>mdi-check</v-icon>
         </div>
